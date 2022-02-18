@@ -1,5 +1,6 @@
 //----------------------------------------
-//　
+//　ライフゲージ
+//　Author：橋野幹生
 //----------------------------------------
 #ifndef _GAGE_H_
 #define _GAGE_H_
@@ -7,7 +8,7 @@
 #include "main.h"
 
 //マクロ定義
-#define MAX_GAGE	(256)	//ビルボードの最大数
+#define MAX_GAGE	(256)	//ライフゲージの最大数
 
 //壁の構造体
 typedef struct
@@ -22,12 +23,12 @@ typedef struct
 }Gage;
 
 //プロトタイプ宣言
-void InitGage(void);				//ビルボードの初期化処理
-void UninitGage(void);				//ビルボードの終了処理
-void UpdateGage(void);				//ビルボードの更新処理
-void DrawGage(void);				//ビルボードの描画処理
-void SetGage(D3DXVECTOR3 pos, int nLife);	//ビルボードの設定
-void HitGage(int nCntGage, int nDamage);
+void InitGage(void);				//ライフゲージの初期化処理
+void UninitGage(void);				//ライフゲージの終了処理
+void UpdateGage(void);				//ライフゲージの更新処理
+void DrawGage(void);				//ライフゲージの描画処理
+void SetGage(D3DXVECTOR3 pos, int nLife);	//ライフゲージの設定
+void HitGage(int nCntGage, int nDamage);	//ライフゲージのヒット処理
 
 #endif
 

@@ -101,7 +101,7 @@ void UpdateCamera(void)
 	//注視点の旋回
 	if (g_camera[0].MovePointer.x != 0.0f)
 	{//左右マウス移動
-		g_camera[0].rot.y -= g_camera[0].MovePointer.x * 0.0001f;
+		g_camera[0].rot.y -= g_camera[0].MovePointer.x * 0.0005f;
 	}
 
 	//移動量分を位置に加算

@@ -1,3 +1,7 @@
+//----------------------------------------
+//　タイム
+//　Author：橋野幹生
+//----------------------------------------
 #ifndef _TIME_H_
 #define _TIME_H_
 
@@ -12,12 +16,12 @@ typedef enum
 }TIME;
 
 //プロトタイプ宣言
-void InitTime(void);
-void UninitTime(void);
-void UpdateTime(void);
-void DrawTime(void);
-int * GetTime(void);
-void AddTime(int nTime);
+void InitTime(void);	//タイムの初期化
+void UninitTime(void);	//タイムの終了
+void UpdateTime(void);	//タイムの更新
+void DrawTime(void);	//タイムの描画
+int * GetTime(void);	//タイムの情報
+void AddTime(int nTime);	//タイムの加算
 
 #endif
 

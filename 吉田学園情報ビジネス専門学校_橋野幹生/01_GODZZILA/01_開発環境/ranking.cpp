@@ -1,3 +1,7 @@
+//----------------------------------------
+//　ランキング画面の処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "ranking.h"
 #include "input.h"
 #include "fade.h"
@@ -353,7 +357,6 @@ void SetRanking(void)
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffRankScore->Lock(0, 0, (void**)&pVtx, 0);
 
-	int aData[5];
 	int nData;
 	int nCount[2];
 

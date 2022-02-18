@@ -1,5 +1,6 @@
 //----------------------------------------
 //　影
+//　Author：橋野幹生
 //----------------------------------------
 #ifndef _SHADOW_H_
 #define _SHADOW_H_
@@ -12,20 +13,20 @@
 //影の構造体
 typedef struct
 {
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 rot;
-	float size_X;
-	float size_Z;
-	D3DXMATRIX mtxWorld;
-	bool bUse;
+	D3DXVECTOR3 pos;		//位置
+	D3DXVECTOR3 rot;		//角度
+	float size_X;			//X方向へのサイズ
+	float size_Z;			//Z方向へのサイズ
+	D3DXMATRIX mtxWorld;	//ワールドマトリクス
+	bool bUse;				//使っているかどうか
 }Shadow;
 
 //プロトタイプ宣言
-void InitShadow(void);
-void UninitShadow(void);
-void UpdateShadow(void);
-void DrawShadow(void);
-int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float size_x, float size_z);
-void SetPositionShadow(int nIdxShadow, D3DXVECTOR3 pos);
+void InitShadow(void);		//影の初期化
+void UninitShadow(void);	//影の終了
+void UpdateShadow(void);	//影の更新
+void DrawShadow(void);		//影の描画
+int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float size_x, float size_z);	//影の設定
+void SetPositionShadow(int nIdxShadow, D3DXVECTOR3 pos);						//影の位置設定
 
 #endif

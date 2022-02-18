@@ -1,3 +1,7 @@
+//----------------------------------------
+//　ゲーム画面の処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "game.h"
 #include "input.h"
 #include "fade.h"
@@ -15,7 +19,6 @@
 #include "meshfield.h"
 #include "meshcylinder.h"
 #include "meshsphere.h"
-#include "meshtop.h"
 #include "effect.h"
 #include "particle.h"
 #include "player.h"
@@ -25,7 +28,6 @@
 #include "map.h"
 #include "gage.h"
 #include "scoregage.h"
-#include "pause.h"
 #include "deletemodel.h"
 #include "explosion.h"
 #include "mouse.h"
@@ -38,8 +40,6 @@ bool g_bPause = false;		//ポーズ中かどうか
 //---------------------------------------------------
 void InitGame(void)
 {
-	//ポーズの初期設定
-	InitPause();
 
 	//カメラの初期設定
 	InitCamera();
@@ -67,9 +67,6 @@ void InitGame(void)
 
 	//メッシュ(半球)の初期設定
 	InitMeshSphere();
-
-	//メッシュの上の初期設定
-	InitMeshTop();
 
 	//影の初期設定
 	InitShadow();
@@ -177,8 +174,6 @@ void UninitGame(void)
 	//メッシュ(半球)の終了処理
 	UninitMeshSphere();
 
-	UninitMeshTop();
-
 	//パーティクルの終了処理
 	UninitParticle();
 
@@ -193,9 +188,6 @@ void UninitGame(void)
 
 	//カメラの終了処理
 	UninitCamera();
-
-	//ポーズの終了処理
-	UninitPause();
 
 	//マウスの終了処理
 	UninitMouse();
@@ -255,8 +247,6 @@ void UpdateGame(void)
 
 			//メッシュ(半球)の更新処理
 			UpdateMeshSphere();
-
-			UpdateMeshTop();
 
 			//プレイヤーの更新処理
 			UpdatePlayer();
@@ -363,8 +353,6 @@ void DrawGame(void)
 
 		//メッシュ(半球)の描画処理
 		DrawMeshSphere();
-
-		DrawMeshTop();
 
 		//壁の描画処理
 		DrawWall();

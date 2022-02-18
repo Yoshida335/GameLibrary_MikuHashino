@@ -46,7 +46,6 @@ void SetMap(void)
 
 	}
 
-
 	for (int nCntY = 0; nCntY < MAX_Y; nCntY++)
 	{
 		for (int nCntX = 0; nCntX < MAX_X; nCntX++)

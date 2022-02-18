@@ -1,5 +1,6 @@
 //----------------------------------------
 //　ポリゴン
+//　Author：橋野幹生
 //----------------------------------------
 #ifndef _POLYGON_H_
 #define _POLYGON_H_
@@ -12,10 +13,10 @@
 #define POLIGON_Z	(50.0f)	// z方向への値	縦幅
 
 //プロトタイプ宣言
-void InitPolygon(void);
-void UninitPolygon(void);
-void UpdatePolygon(void);
-void DrawPolygon(void);
+void InitPolygon(void);		//ポリゴンの初期化
+void UninitPolygon(void);	//ポリゴンの終了
+void UpdatePolygon(void);	//ポリゴンの更新
+void DrawPolygon(void);		//ポリゴンの描画
 
 #endif
 

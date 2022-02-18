@@ -1,3 +1,7 @@
+//----------------------------------------
+//　リザルト画面
+//　Author：橋野幹生
+//----------------------------------------
 #ifndef _RESULT_H_
 #define _RESULT_H_
 
@@ -15,12 +19,12 @@ typedef enum
 }SignType;
 
 //プロトタイプ宣言
-void InitResult(void);
-void UninitResult(void);
-void UpdateResult(void);
-void DrawResult(void);
-void SetResult(int nScore, D3DXVECTOR3 pos, D3DXVECTOR3 size);
-void SetSign(D3DXVECTOR3 pos, D3DXVECTOR3 size, SignType type);
-int GetResultScore(void);
+void InitResult(void);		//リザルト画面の初期化
+void UninitResult(void);	//リザルト画面の終了
+void UpdateResult(void);	//リザルト画面の更新
+void DrawResult(void);		//リザルト画面の描画
+void SetResult(int nScore, D3DXVECTOR3 pos, D3DXVECTOR3 size);		//リザルトの設定
+void SetSign(D3DXVECTOR3 pos, D3DXVECTOR3 size, SignType type);		//記号の設定
+int GetResultScore(void);	//リザルト画面のスコア情報
 
 #endif

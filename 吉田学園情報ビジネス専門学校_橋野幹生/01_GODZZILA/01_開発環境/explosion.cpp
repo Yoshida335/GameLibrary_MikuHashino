@@ -14,7 +14,7 @@
 
 //グローバル変数宣言
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffExplosion = NULL;		//頂点バッファへのポインタ
-LPDIRECT3DTEXTURE9 g_pTextureExplosion = NULL;			//テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureExplosion = NULL;
 Explosion g_aExplosion[MAX_EXPLOSION];
 
 //---------------------------------------------------
@@ -93,14 +93,13 @@ void InitExplosion(void)
 //---------------------------------------------------
 void UninitExplosion(void)
 {
-	//頂点バッファの破棄
+
 	if (g_pVtxBuffExplosion != NULL)
 	{
 		g_pVtxBuffExplosion->Release();
 		g_pVtxBuffExplosion = NULL;
 	}
 
-	//テクスチャの破棄
 	if (g_pTextureExplosion != NULL)
 	{
 		g_pTextureExplosion->Release();
@@ -177,7 +176,7 @@ void DrawExplosion(void)
 				D3DXMATRIX mtxView;
 				pDevice->GetTransform(D3DTS_VIEW, &mtxView);	//ビューマトリックス取得
 
-				//カメラの逆行性を設定
+																//カメラの逆行性を設定
 				g_aExplosion[nCntExplosion].mtxWorld._11 = mtxView._11;
 				g_aExplosion[nCntExplosion].mtxWorld._12 = mtxView._21;
 				g_aExplosion[nCntExplosion].mtxWorld._13 = mtxView._31;

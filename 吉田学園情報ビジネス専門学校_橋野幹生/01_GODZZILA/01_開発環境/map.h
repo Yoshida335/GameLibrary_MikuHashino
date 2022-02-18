@@ -1,5 +1,5 @@
 //----------------------------------------
-//　マップのヘッダー
+//　マップ
 //　Author：橋野幹生
 //----------------------------------------
 #ifndef _MAP_H_
@@ -13,7 +13,7 @@ typedef struct
 }SetPos;
 
 void SetMap(void);	//マップの設定
-SetPos * GetSetPos(void);
+SetPos * GetSetPos(void);	//敵の設定位置の情報
 
 #endif
 
