@@ -187,12 +187,12 @@ void UpdateEnemy(void)
 			//プレイヤーとの差を求める
 			g_aEnemy[nCntEnemy].posdis.x = pPlayer->pos.x - g_aEnemy[nCntEnemy].pos.x;
 			g_aEnemy[nCntEnemy].posdis.z = pPlayer->pos.z - g_aEnemy[nCntEnemy].pos.z;
-
+			
 			float fLength = D3DXVec3Length(&g_aEnemy[nCntEnemy].posdis);
-
+			
 			//正規化する
 			D3DXVec3Normalize(&g_aEnemy[nCntEnemy].posdis, &g_aEnemy[nCntEnemy].posdis);
-
+			
 			if (fLength < 500.0f)
 			{//100離れたら来ないよ。
 				g_aEnemy[nCntEnemy].pos += g_aEnemy[nCntEnemy].posdis * 1.0f;

@@ -484,7 +484,7 @@ void HitModel(int nCntModel, int nDamage)
 
 	if (g_aModel[nCntModel].nLife <= 0)
 	{//‘Ì—Í‚ª‚OˆÈ‰º‚É‚È‚Á‚½‚ç
-		SetExplosion(g_aModel[nCntModel].pos);
+		SetExplosion(D3DXVECTOR3(g_aModel[nCntModel].pos.x, g_aModel[nCntModel].pos.y + 40.0f, g_aModel[nCntModel].pos.z));
 		SetDeleteModel(g_aModel[nCntModel].pos, g_aModel[nCntModel].rot);
 		g_aModel[nCntModel].bUse = false;	//Á‚·
  		g_nSetModel++;						//”z’uƒ‚ƒfƒ‹”‚Ì”‚ðŒ¸‚ç‚·

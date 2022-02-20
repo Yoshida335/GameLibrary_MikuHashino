@@ -260,11 +260,6 @@ void InitResult(void)
 		g_pVtxBuffSign->Unlock();
 	}
 
-	//SetResult(g_Result.fParcent, D3DXVECTOR3(100.0f, 150.0f, 0.0f), D3DXVECTOR3(60.0f, 80.0f, 0.0f));
-	//SetSign(D3DXVECTOR3(350.0f, 150.0f, 0.0f), D3DXVECTOR3(70.0f, 70.0f, 0.0f), SignType_05);
-	//SetResult(10000, D3DXVECTOR3(450.0f, 155.0f, 0.0f), D3DXVECTOR3(40.0f, 60.0f, 0.0f));
-	//SetSign(D3DXVECTOR3(620.0f, 155.0f, 0.0f), D3DXVECTOR3(50.0f, 50.0f, 0.0f), SignType_05);
-
 	//％
 	{
 		SetResult(g_Result.fParcent, D3DXVECTOR3(220.0f, 150.0f, 0.0f), D3DXVECTOR3(60.0f, 80.0f, 0.0f));
@@ -305,7 +300,7 @@ void InitResult(void)
 	//総評
 	SetScore(((g_Result.fParcent * 100) + (g_Result.fModel * 500) + (*pTime * 100)), D3DXVECTOR3(790.0f, 620.0f, 0.0f), D3DXVECTOR3(80.0f, 100.0f, 0.0f));
 	//最終スコアを保存
-	g_FinishResultScore = ((g_Result.fParcent * 100) + (g_Result.fModel * 1000) + (*pTime * 100));
+	g_FinishResultScore = ((g_Result.fParcent * 100) + (g_Result.fModel * 500) + (*pTime * 100));
 
 	//サウンドの再生
 	PlaySound(SOUND_LABEL_BGM_RESULT);

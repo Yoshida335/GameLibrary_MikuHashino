@@ -326,7 +326,7 @@ void ResetRanking(void)
 	FILE *pFile;
 
 	//ファイルを開く
-	pFile = fopen("data\\ranking.txt", "r");		//(テキスト名を指定, モードを指定)
+	pFile = fopen("data\\ranking2.txt", "r");		//(テキスト名を指定, モードを指定)
 
 	if (pFile != NULL)
 	{//ファイルが開けた場合
@@ -423,7 +423,7 @@ void SaveRanking(void)
 	FILE *pFile;
 
 	//ファイルを開く
-	pFile = fopen("data\\ranking.txt", "w");		//(テキスト名を指定, モードを指定)
+	pFile = fopen("data\\ranking2.txt", "w");		//(テキスト名を指定, モードを指定)
 
 	if (pFile != NULL)
 	{//ファイルが開けた場合

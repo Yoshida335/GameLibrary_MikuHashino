@@ -40,7 +40,7 @@ void InitTime(void)
 		g_posTime[nCntT] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//位置の初期
 	}
 	g_posTT = D3DXVECTOR3(1050.0f, 100.0f, 0.0f);
-	g_nTime = 31;					//タイムの初期化
+	g_nTime = 30;					//タイムの初期化
 	g_nCntTime = 60;
 	g_TimeState = TIME_ON;
 	g_nOneTimer = 0;
@@ -140,7 +140,7 @@ void UpdateTime(void)
 			if (g_nTime % 10 == 0)
 			{
 				SetPos * pSetEnemyPos = GetSetPos();
-
+			
 				for (int i = 0; i < 4; i++)
 				{
 					SetEnemy(pSetEnemyPos->Setpos[i], D3DXVECTOR3(0.0f, 0.0f, 0.0f), TYPE_ENEMY_01, 1);

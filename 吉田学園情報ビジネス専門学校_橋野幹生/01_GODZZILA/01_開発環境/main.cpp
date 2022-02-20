@@ -17,7 +17,7 @@
 
 //マクロ定義
 #define CLASS_NAME			"WindowsClass"		//ウィンドウクラスの名前
-#define WINDOW_NAME			"GOZZILA"				//ウィンドウの名前(キャプションに表示)
+#define WINDOW_NAME			"VS.GOZZILA"		//ウィンドウの名前(キャプションに表示)
 
 //プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -86,7 +86,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	DWORD dwFPSLastTime;				//最後に計測した時刻
 
 	//初期化設定
-	if (FAILED(Init(hInstance, hWnd, TRUE)))
+	if (FAILED(Init(hInstance, hWnd, FALSE)))
 	{//初期化が失敗した場合
 		return -1;
 	}

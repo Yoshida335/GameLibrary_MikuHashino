@@ -13,12 +13,11 @@
 #include <string.h>
 
 //グローバル変数宣言
-LPD3DXMESH g_pMeshDeleteModel = NULL;				//メッシュ情報へのポインタ
-LPD3DXBUFFER g_pBuffMatDeleteModel = NULL;			//マテリアル情報へのポインタ
+LPD3DXMESH g_pMeshDeleteModel = NULL;			//メッシュ情報へのポインタ
+LPD3DXBUFFER g_pBuffMatDeleteModel = NULL;		//マテリアル情報へのポインタ
 DWORD g_nNumMatDeleteModel = 0;					//マテリアル情報の数
 DeleteModel g_aDeleteModel[MAX_DELETEMODEL];
 D3DXMATERIAL * g_pMatDeleteModel;			//マテリアルデータへのポインタ
-
 LPDIRECT3DTEXTURE9 g_pTextureDelete[10];	//テクスチャへのポインタ
 
 //---------------------------------------------------
