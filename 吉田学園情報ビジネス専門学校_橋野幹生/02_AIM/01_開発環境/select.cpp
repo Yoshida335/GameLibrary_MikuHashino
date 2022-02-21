@@ -241,6 +241,21 @@ void UpdateSelect(void)
 		pVtx += 4;
 	}
 
+	if (GetKeyboardTrigger(DIK_F1) == true)
+	{//Sキーが押された
+		g_nSelect = STAGE_No_0;
+		SetFade(MODE_GAME);
+	}
+	if (GetKeyboardTrigger(DIK_F2) == true)
+	{//Sキーが押された
+		g_nSelect = STAGE_No_1;
+		SetFade(MODE_GAME);
+	}
+	if (GetKeyboardTrigger(DIK_F3) == true)
+	{//Sキーが押された
+		g_nSelect = STAGE_No_2;
+		SetFade(MODE_GAME);
+	}
 
 	//頂点バッファをアンロックする
 	g_pVtxBuffSelect->Unlock();

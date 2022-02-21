@@ -19,5 +19,6 @@ void UpdateRanking(void);
 void DrawRanking(void);
 void ResetRanking(void);
 void SetRanking(void);
+void SaveRanking(void);
 
 #endif

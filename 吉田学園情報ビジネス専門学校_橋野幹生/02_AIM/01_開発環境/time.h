@@ -37,6 +37,8 @@ void UpdateTime(void);
 void DrawTime(void);
 void SetTime(int nTime);
 STARTTIME * GetStartTime(void);
+int * GetTime(void);
+void ClearTime(void);
 
 #endif
 

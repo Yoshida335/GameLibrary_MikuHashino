@@ -65,9 +65,6 @@ void InitResultClear(void)
 
 void UninitResultClear(void)
 {
-	//サウンドの停止
-	StopSound();
-
 	//テクスチャの破棄
 	if (g_pTextureResultClear != NULL)
 	{
@@ -88,7 +85,7 @@ void UpdateResultClear(void)
 	if (GetKeyboardTrigger(DIK_RETURN) == true)
 	{
 		//モード設定(ゲーム画面に移行)
-		SetFade(MODE_TITLE);
+		SetFade(MODE_RANKING);
 	}
 }
 

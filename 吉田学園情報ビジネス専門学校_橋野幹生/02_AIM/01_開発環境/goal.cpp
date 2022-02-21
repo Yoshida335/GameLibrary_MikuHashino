@@ -2,6 +2,7 @@
 #include "fade.h"
 #include "block.h"
 #include "sound.h"
+#include "time.h"
 
 //グローバル変数宣言
 LPDIRECT3DTEXTURE9 g_pTextureGoal = {};
@@ -236,6 +237,8 @@ void CollisionGoal(D3DXVECTOR3 * pos, D3DXVECTOR3 * posOld, float fWidth, float 
 							{
 								//モード設定(ゲーム画面に移行)
 								SetFade(MODE_RESULT_CLEAR);
+
+								ClearTime();
 
 								//サウンドの再生
 								PlaySound(SOUND_LABEL_SE_DOOR);

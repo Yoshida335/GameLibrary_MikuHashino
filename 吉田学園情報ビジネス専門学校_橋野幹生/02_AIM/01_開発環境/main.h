@@ -5,7 +5,9 @@
 #define _MAIN_H_				//２重インクルード防止のマクロ定義	
 
 #include <windows.h>
-//#include <stdio.h>//#include <stdlib.h>//#include <string.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
 #include "d3dx9.h"
 #define DIRECTINPUT_VERSION (0x0800)	//ビルド時の警告対処用マクロ
 #include "dinput.h"						//入力処理に必要

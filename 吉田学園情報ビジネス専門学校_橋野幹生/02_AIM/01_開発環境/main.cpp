@@ -10,6 +10,7 @@
 #include "game.h"
 #include "result.h"
 #include "result_clear.h"
+#include "ranking.h"
 #include "fade.h"
 #include "select.h"
 #include "sound.h"
@@ -80,7 +81,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	DWORD dwExecLastTime;				//最後に処理した時刻
 
 	//初期化設定
-	if (FAILED(Init(hInstance, hWnd, TRUE)))
+	if (FAILED(Init(hInstance, hWnd, FALSE)))
 	{//初期化が失敗した場合
 		return -1;
 	}
@@ -142,8 +143,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 //----------------------------------------
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	int nID;							//返り値を格納
-	//HDC hDC;							//デバイスコンテキスト(GDIオブジェクト)のハンドル
+	int nID;	//返り値を格納
+	//HDC hDC;	//デバイスコンテキスト(GDIオブジェクト)のハンドル
 
 	switch (uMsg)
 	{
@@ -283,6 +284,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//サウンドの初期化
 	InitSound(hWnd);
 
+	//ランキングをリセット
+	ResetRanking();
+
 	//フェードの設定
 	InitFade(g_mode);
 
@@ -305,6 +309,9 @@ void Uninit(void)
 
 	//リザルト_クリア画面の終了処理
 	UninitResultClear();
+
+	//ランキング画面の終了処理
+	UninitRanking();
 
 	//キーボードの終了処理
 	UninitKeyboard();
@@ -363,6 +370,10 @@ void Updata(void)
 	case MODE_RESULT_CLEAR:
 		UpdateResultClear();
 		break;
+
+	case MODE_RANKING:
+		UpdateRanking();
+		break;
 	}
 
 	//フェードの更新処理
@@ -407,6 +418,10 @@ void Draw(void)
 
 		case MODE_RESULT_CLEAR:
 			DrawResultClear();
+			break;
+
+		case MODE_RANKING:
+			DrawRanking();
 			break;
 		}
 
@@ -454,6 +469,10 @@ void SetMode(MODE mode)
 	case MODE_RESULT_CLEAR:
 		UninitResultClear();
 		break;
+
+	case MODE_RANKING:
+		UninitRanking();
+		break;
 	}
 
 	//新しい画面(モード)の初期化処理
@@ -481,6 +500,10 @@ void SetMode(MODE mode)
 
 	case MODE_RESULT_CLEAR:
 		InitResultClear();
+		break;
+
+	case MODE_RANKING:
+		InitRanking();
 		break;
 	}
 

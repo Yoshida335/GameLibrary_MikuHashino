@@ -8,6 +8,7 @@ typedef enum
 {
 	STAGE_No_0 = 0,
 	STAGE_No_1,
+	STAGE_No_2,
 	STAGE_No_MAX
 }STAGE_No;
 

@@ -16,6 +16,8 @@ int g_nTime;				//現在のタイム
 int g_nCntTime;				//カウントタイム
 STARTTIME g_TimeState;
 int g_nCnt = 0;
+int clearTime;
+int g_nSetTime;
 
 //----------------------------------------
 //  タイムの初期化設定処理
@@ -51,6 +53,8 @@ void InitTime(void)
 	g_nCntTime = 60;
 	g_TimeState.state = TIME_OFF;
 	g_nCnt = 0;
+	clearTime = 0;
+	g_nSetTime = 0;
 
 	g_StartTime.pos = D3DXVECTOR3((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2), 0.0f);		//位置の初期
 	g_StartTime.bUse = false;
@@ -245,6 +249,8 @@ void UpdateTime(void)
 		{
 			if (g_nCnt == 0)
 			{
+				ClearTime();
+
 				//モード設定(ゲーム画面に移行)
 				SetFade(MODE_RESULT);
 
@@ -255,6 +261,7 @@ void UpdateTime(void)
 		{//カウント数が０だったら
 			g_nTime--;
 			g_nCntTime = 60;
+			clearTime++;
 		}
 
 		nTimePos[0] = g_nTime % 1000 / 100;
@@ -410,9 +417,20 @@ void DrawTime(void)
 void SetTime(int nTime)
 {
 	g_nTime = nTime;
+	g_nSetTime = nTime;
 }
 
 STARTTIME * GetStartTime(void)
 {
 	return &g_TimeState;
+}
+
+int * GetTime(void)
+{
+	return &clearTime;
+}
+
+void ClearTime(void)
+{
+	clearTime = (g_nSetTime - clearTime);
 }

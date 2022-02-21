@@ -13,6 +13,7 @@
 #include "sound.h"
 #include "stage.h"
 #include "select.h"
+#include "map.h"
 
 //グローバル変数宣言
 bool g_bPause = false;		//ポーズ中かどうか
@@ -98,7 +99,7 @@ void UpdateGame(void)
 	if (GetKeyboardTrigger(DIK_RETURN) == true)
 	{
 		//モード設定(ゲーム画面に移行)
-		//SetFade(MODE_RESULT);
+		SetFade(MODE_RESULT);
 	}
 	else
 	{

@@ -151,11 +151,11 @@ void UpdatePlayer(void)
 
 	if (g_Player.pos.x - PLAYER_WIDTH / 2 >= SCREEN_WIDTH)
 	{//画面外(右側)に出たら
-		g_Player.pos = D3DXVECTOR3(0.0f - PLAYER_WIDTH / 2, g_Player.pos.y, 0.0f);
+		g_Player.pos = D3DXVECTOR3(0.0f - PLAYER_WIDTH / 2 + 0.01f, g_Player.pos.y, 0.0f);			//斜めすり抜け防止のため +0.01f してる
 	}
 	else if (g_Player.pos.x + PLAYER_WIDTH / 2 <= 0.0f)
 	{//画面外(左側)に出たら
-		g_Player.pos = D3DXVECTOR3(SCREEN_WIDTH + PLAYER_WIDTH / 2, g_Player.pos.y, 0.0f);
+		g_Player.pos = D3DXVECTOR3(SCREEN_WIDTH + PLAYER_WIDTH / 2 - 0.01f, g_Player.pos.y, 0.0f);	//斜めすり抜け防止のため +0.01f してる
 	}
 	if (g_Player.pos.y >= SCREEN_HEIGHT)
 	{//画面外(下側)に出たら 

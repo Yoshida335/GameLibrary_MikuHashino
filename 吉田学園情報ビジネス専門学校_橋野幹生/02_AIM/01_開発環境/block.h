@@ -4,7 +4,7 @@
 #include "main.h"
 
 //マクロ定義
-#define MAX_BLOCK			(128)		//最大ブロック数
+#define MAX_BLOCK			(256)		//最大ブロック数
 #define BLOCK_WIDTH			(40.0f)		//ブロックの幅
 #define BLOCK_HEIGHT		(40.0f)		//ブロックの高さ
 #define BLOCK_MOVE			(0.2f)		//ブロックの動くスピード	
