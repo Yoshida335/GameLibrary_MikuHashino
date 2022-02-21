@@ -6,12 +6,12 @@ LPDIRECT3DTEXTURE9 g_pTextureLife = NULL;		//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffLife = NULL;
 LPDIRECT3DTEXTURE9 g_pTextureLifeT = NULL;
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffLifeT = NULL;
-D3DXVECTOR3 g_posLife[3];	//タイムの数
+D3DXVECTOR3 g_posLife[3];	//ライフの数
 D3DXVECTOR3 g_posLifeT;
 int nLifeHP;
 
 //----------------------------------------
-//  タイムの初期化設定処理
+//  ライフの初期化設定処理
 //----------------------------------------
 void InitLife(void)
 {
@@ -129,7 +129,7 @@ void InitLife(void)
 }
 
 //----------------------------------------
-//　タイムの終了処理
+//　ライフの終了処理
 //----------------------------------------
 void UninitLife(void)
 {
@@ -161,7 +161,7 @@ void UninitLife(void)
 }
 
 //----------------------------------------
-//  タイムの更新処理
+//  ライフの更新処理
 //----------------------------------------
 void UpdateLife(void)
 {
@@ -173,7 +173,7 @@ void UpdateLife(void)
 
 	VERTEX_2D * pVtx;	//頂点情報へのポインタ
 
-						//頂点情報をロックし、頂点情報へのポインタを取得
+	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffLife->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntLife = 0; nCntLife < 3; nCntLife++)
@@ -189,10 +189,15 @@ void UpdateLife(void)
 
 	//頂点バッファをアンロックする
 	g_pVtxBuffLife->Unlock();
+
+	if (nLifeHP <= 0)
+	{
+		nLifeHP = 0;
+	}
 }
 
 //----------------------------------------
-//  タイムの描画処理
+//  ライフの描画処理
 //----------------------------------------
 void DrawLife(void)
 {
