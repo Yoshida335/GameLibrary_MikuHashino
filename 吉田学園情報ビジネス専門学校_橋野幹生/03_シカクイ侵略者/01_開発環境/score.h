@@ -8,5 +8,6 @@ void UpdateScore(void);
 void DrawScore(void);
 void SetScore(int nScore);
 void AddScore(int nValue);
+void SadScore(int nValue);
 
 #endif

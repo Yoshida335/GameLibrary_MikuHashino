@@ -146,12 +146,12 @@ void UpdateEnemy(void)
 			g_aEnemy[nCntEnemy].move.y += ENEMY_MOVE;
 			g_BulletCnt += 1;
 
-			if (g_aEnemy[nCntEnemy].pos.y + g_aEnemy[nCntEnemy].move.y >= SCREEN_HEIGHT - 80.0f - ENEMY_SIZE)
-			{
-				SetExplosion(D3DXVECTOR3(g_aEnemy[nCntEnemy].pos.x, g_aEnemy[nCntEnemy].pos.y + g_aEnemy[nCntEnemy].move.y, 0.0f), 255);
-				g_aEnemy[nCntEnemy].bUse = false;
-				g_aEnemy[nCntEnemy].move.y = 0.0f;
-			}
+			//if (g_aEnemy[nCntEnemy].pos.y + g_aEnemy[nCntEnemy].move.y >= SCREEN_HEIGHT - 80.0f - ENEMY_SIZE)
+			//{
+			//	SetExplosion(D3DXVECTOR3(g_aEnemy[nCntEnemy].pos.x, g_aEnemy[nCntEnemy].pos.y + g_aEnemy[nCntEnemy].move.y, 0.0f), 255);
+			//	g_aEnemy[nCntEnemy].bUse = false;
+			//	g_aEnemy[nCntEnemy].move.y = 0.0f;
+			//}
 
 			//敵が弾出す時の試行錯誤の結果
 			//if (g_BulletCnt >= 240)
@@ -166,6 +166,9 @@ void UpdateEnemy(void)
 			//	}
 			//	g_BulletCnt = 0;
 			//}
+
+			//ステージの当たり判定
+			CollisionStage(g_aEnemy[nCntEnemy].pos, ENEMY_SIZE, g_aEnemy[nCntEnemy].move, &g_aEnemy[nCntEnemy].nLife);
 
 			switch (g_aEnemy[nCntEnemy].state)
 			{
@@ -194,6 +197,13 @@ void UpdateEnemy(void)
 
 				break;
 			}
+		}
+
+		if (g_aEnemy[nCntEnemy].nLife <= 0)
+		{
+			g_aEnemy[nCntEnemy].move.y = 0.0f;
+
+			g_aEnemy[nCntEnemy].bUse = false;
 		}
 
 		pVtx += 4;			//頂点データのポインタを4つ分進める
@@ -256,7 +266,7 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE nType)
 		{//敵が使用されていない場合
 			g_aEnemy[nCntEnemy].pos = pos;
 			g_aEnemy[nCntEnemy].nType = nType;
-			g_aEnemy[nCntEnemy].nLife = 2;
+			g_aEnemy[nCntEnemy].nLife = 5;
 			g_aEnemy[nCntEnemy].bUse = true;
 
 			//頂点座標更新

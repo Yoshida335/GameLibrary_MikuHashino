@@ -2,6 +2,8 @@
 #include "enemy.h"
 #include "fade.h"
 #include "explosion.h"
+#include "life.h"
+#include "score.h"
 
 //グローバル変数宣言
 LPDIRECT3DTEXTURE9 g_pTextureStage = {};				//テクスチャへのポインタ
@@ -97,44 +99,42 @@ void UninitStage(void)
 //----------------------------------------
 void UpdateStage(void)
 {
-	//VERTEX_2D * pVtx;
+	VERTEX_2D * pVtx;
 
-	////頂点情報をロックし、頂点情報へのポインタを取得
-	//g_pVtxBuffStage->Lock(0, 0, (void**)&pVtx, 0);
+	//頂点情報をロックし、頂点情報へのポインタを取得
+	g_pVtxBuffStage->Lock(0, 0, (void**)&pVtx, 0);
 
-	//	if (g_Stage.bUse == true)
-	//	{//ステージが使用されている
-	//		switch (g_Stage.state)
-	//		{
-	//		case STAGESTATE_NOMAL:
-	//			//頂点座標の設定
-	//			pVtx[0].pos = D3DXVECTOR3(g_Stage.pos.x - 480.0f, g_Stage.pos.y - 40.0f, 0.0f);
-	//			pVtx[1].pos = D3DXVECTOR3(g_Stage.pos.x + 480.0f, g_Stage.pos.y - 40.0f, 0.0f);
-	//			pVtx[2].pos = D3DXVECTOR3(g_Stage.pos.x - 480.0f, g_Stage.pos.y + 40.0f, 0.0f);
-	//			pVtx[3].pos = D3DXVECTOR3(g_Stage.pos.x + 480.0f, g_Stage.pos.y + 40.0f, 0.0f);
+	{//ステージが使用されている
+		switch (g_Stage.state)
+		{
+		case STAGESTATE_NOMAL:
+			//頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(g_Stage.pos.x - 480.0f, g_Stage.pos.y - 40.0f, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(g_Stage.pos.x + 480.0f, g_Stage.pos.y - 40.0f, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(g_Stage.pos.x - 480.0f, g_Stage.pos.y + 40.0f, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_Stage.pos.x + 480.0f, g_Stage.pos.y + 40.0f, 0.0f);
 
-	//			break;
+			break;
 
-	//		case STAGESTATE_DAMAGE:
-	//			g_Stage.nCounterState--;
+		case STAGESTATE_DAMAGE:
+			g_Stage.nCounterState--;
 
-	//			if (g_Stage.nCounterState <= 0)
-	//			{
-	//				g_Stage.state = STAGESTATE_NOMAL;
+			if (g_Stage.nCounterState <= 0)
+			{
+				g_Stage.state = STAGESTATE_NOMAL;
 
-	//				//頂点カラーの設定
-	//				pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//				pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//				pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//				pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//			}
+				//頂点カラーの設定
+				pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			}
 
-	//			break;
-	//		}
-	//	}
-
-	////頂点バッファをアンロックする
-	//g_pVtxBuffStage->Unlock();
+			break;
+		}
+	}
+	//頂点バッファをアンロックする
+	g_pVtxBuffStage->Unlock();
 }
 
 //----------------------------------------
@@ -166,11 +166,12 @@ void DrawStage(void)
 void HitStage(int nDamage)
 {
 	g_Stage.nLife -= nDamage;
+	SetLife(nDamage);
 
 	if (g_Stage.nLife <= 0)
 	{
 		//モード設定(ゲーム画面に移行)
-		//SetFade(MODE_RESULT);
+		SetFade(MODE_RESULT);
 	}
 	else
 	{
@@ -183,10 +184,10 @@ void HitStage(int nDamage)
 		g_pVtxBuffStage->Lock(0, 0, (void**)&pVtx, 0);
 
 		//頂点カラーの設定
-		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+		pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+		pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+		pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 
 		//頂点バッファをアンロックする
 		g_pVtxBuffStage->Unlock();
@@ -201,3 +202,22 @@ Stage * GetStage(void)
 	return &g_Stage;
 }
 
+//----------------------------------------
+//  ステージの当たり判定
+//----------------------------------------
+void CollisionStage(D3DXVECTOR3 pos, float size, D3DXVECTOR3 move, int * nLife)
+{
+	Enemy * pEnemy;
+
+	//敵の情報の取得
+	pEnemy = GetEnemy();
+
+	if (pos.y + (size / 2.0f) + move.y >= g_Stage.pos.y - 40.0f ||
+		pos.y + (size / 2.0f) + move.y >= g_Stage.pos.y + 40.0f)
+	{
+		*nLife = 0;
+		SetExplosion(D3DXVECTOR3(pos.x, pos.y + move.y, 0.0f), 255);
+		HitStage(1);
+		SadScore(500);
+	}
+}

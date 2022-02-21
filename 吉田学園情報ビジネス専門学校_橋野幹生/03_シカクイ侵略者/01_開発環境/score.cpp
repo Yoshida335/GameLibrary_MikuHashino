@@ -164,7 +164,40 @@ void UninitScore(void)
 //----------------------------------------
 void UpdateScore(void)
 {
+	if (g_nScore <= 0)
+	{
+		g_nScore = 0;
 
+		int aPosTexU[8];					//各桁の数字を格納
+
+		aPosTexU[0] = g_nScore % 100000000 / 10000000;
+		aPosTexU[1] = g_nScore % 10000000 / 1000000;
+		aPosTexU[2] = g_nScore % 1000000 / 100000;
+		aPosTexU[3] = g_nScore % 100000 / 10000;
+		aPosTexU[4] = g_nScore % 10000 / 1000;
+		aPosTexU[5] = g_nScore % 1000 / 100;
+		aPosTexU[6] = g_nScore % 100 / 10;
+		aPosTexU[7] = g_nScore % 10;
+
+		VERTEX_2D * pVtx;	//頂点情報へのポインタ
+
+	//頂点情報をロックし、頂点情報へのポインタを取得
+		g_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);
+
+		for (int nCntScore = 0; nCntScore < 8; nCntScore++)
+		{
+			//テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore], 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore] + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore], 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore] + 0.1f, 1.0f);
+
+			pVtx += 4;
+		}
+
+		//頂点バッファをアンロックする
+		g_pVtxBuffScore->Unlock();
+	}
 }
 
 //----------------------------------------
@@ -264,7 +297,45 @@ void AddScore(int nValue)
 
 	VERTEX_2D * pVtx;	//頂点情報へのポインタ
 
-						//頂点情報をロックし、頂点情報へのポインタを取得
+	//頂点情報をロックし、頂点情報へのポインタを取得
+	g_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntScore = 0; nCntScore < 8; nCntScore++)
+	{
+		//テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore], 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore] + 0.1f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore], 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(0.1f * aPosTexU[nCntScore] + 0.1f, 1.0f);
+
+		pVtx += 4;
+	}
+
+	//頂点バッファをアンロックする
+	g_pVtxBuffScore->Unlock();
+}
+
+//----------------------------------------
+//  スコアの減算処理
+//----------------------------------------
+void SadScore(int nValue)
+{
+	int aPosTexU[8];					//各桁の数字を格納
+
+	g_nScore -= nValue;
+
+	aPosTexU[0] = g_nScore % 100000000 / 10000000;
+	aPosTexU[1] = g_nScore % 10000000 / 1000000;
+	aPosTexU[2] = g_nScore % 1000000 / 100000;
+	aPosTexU[3] = g_nScore % 100000 / 10000;
+	aPosTexU[4] = g_nScore % 10000 / 1000;
+	aPosTexU[5] = g_nScore % 1000 / 100;
+	aPosTexU[6] = g_nScore % 100 / 10;
+	aPosTexU[7] = g_nScore % 10;
+
+	VERTEX_2D * pVtx;	//頂点情報へのポインタ
+
+	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntScore = 0; nCntScore < 8; nCntScore++)

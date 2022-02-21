@@ -10,6 +10,7 @@
 #include "time.h"
 #include "stage.h"
 #include "sound.h"
+#include "life.h"
 
 void InitGame(void)
 {
@@ -36,6 +37,9 @@ void InitGame(void)
 
 	//タイムの初期化設定
 	InitTime();
+
+	//ライフの初期化設定
+	InitLife();
 
 	//サウンドの再生
 	PlaySound(SOUND_LABEL_BGM001);
@@ -67,6 +71,9 @@ void UninitGame(void)
 	//スコアの終了処理
 	UninitScore();
 
+	//ライフの終了処理
+	UninitLife();
+
 	//タイムの終了処理
 	UninitTime();
 }
@@ -96,6 +103,9 @@ void UpdateGame(void)
 
 	//タイムの更新処理
 	UpdateTime();
+
+	//ライフの更新処理
+	UpdateLife();
 }
 
 void DrawGame(void)
@@ -123,5 +133,8 @@ void DrawGame(void)
 
 	//タイムの描画処理
 	DrawTime();
+
+	//ライフの描画処理
+	DrawLife();
 }
 

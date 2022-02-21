@@ -28,5 +28,6 @@ void UpdateStage(void);
 void DrawStage(void);
 void HitStage(int nDamage);
 Stage * GetStage(void);
+void CollisionStage(D3DXVECTOR3 pos, float size, D3DXVECTOR3 move, int * nLife);
 
 #endif
