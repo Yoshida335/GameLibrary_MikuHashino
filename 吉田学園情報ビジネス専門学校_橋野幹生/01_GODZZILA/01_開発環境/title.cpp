@@ -7,16 +7,20 @@
 #include "fade.h"
 #include "sound.h"
 
-LPDIRECT3DTEXTURE9 g_pTextureTitle[2] = {};				//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTitle[2] = {};		//頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureTitle[2] = {};			//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTitle[2] = {};	//頂点バッファへのポインタ
 D3DXVECTOR3 g_posText;
 
-LPDIRECT3DTEXTURE9 g_pTextureK[2] = {};			//テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureK[2] = {};				//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffK[2] = {};		//頂点バッファへのポインタ
 D3DXVECTOR3 g_posK;
 
 LPDIRECT3DTEXTURE9 g_pTextureLogo = NULL;			//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffLogo = NULL;		//頂点バッファへのポインタ
+
+bool g_bTitle;		//タイトル画面1回だけ起動用
+float g_fCntColor = 0;
+float g_fCntTitle = 0;
 
 //----------------------------------------
 //  タイトルの初期化設定処理
@@ -58,6 +62,7 @@ void InitTitle(void)
 	//位置初期化(PRESS ENTER)
 	g_posText = D3DXVECTOR3((SCREEN_WIDTH / 2) + 250.0f, 550.0f, 0.0f);
 	g_posK = D3DXVECTOR3((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) + 10.0f, 0.0f);
+	g_bTitle = false;
 
 	//頂点バッファの生成
 	for (int nCnt = 0; nCnt < 2; nCnt++)
@@ -285,8 +290,7 @@ void UninitTitle(void)
 		g_pVtxBuffLogo = NULL;
 	}
 }
-float nCntColor = 0;
-float nCntTitle = 0;
+
 //----------------------------------------
 //  タイトルの更新設定処理
 //----------------------------------------
@@ -295,30 +299,30 @@ void UpdateTitle(void)
 	//テキストの頂点
 	VERTEX_2D * pVtx;		//頂点情報へのポインタ
 
-	nCntTitle += 0.0005f;
+	g_fCntTitle += 0.0005f;
 
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffTitle[0]->Lock(0, 0, (void**)&pVtx, 0);
 
 	//テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f - nCntTitle, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f - nCntTitle, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f - nCntTitle, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f - nCntTitle, 1.0f);
+	pVtx[0].tex = D3DXVECTOR2(0.0f - g_fCntTitle, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f - g_fCntTitle, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f - g_fCntTitle, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f - g_fCntTitle, 1.0f);
 
 	//頂点バッファをアンロックする
 	g_pVtxBuffTitle[0]->Unlock();
 
-	nCntColor += 0.8f;
+	g_fCntColor += 0.8f;
 
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffK[1]->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * nCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * nCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * nCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * nCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
+	pVtx[0].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * g_fCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
+	pVtx[1].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * g_fCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
+	pVtx[2].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * g_fCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
+	pVtx[3].col = D3DXCOLOR(0.0f + (sinf((D3DX_PI / 270.0f) * g_fCntColor) * 1.0f), 0.0f, 0.0f, 1.0f);
 
 	//頂点バッファをアンロックする
 	g_pVtxBuffK[1]->Unlock();
@@ -329,19 +333,21 @@ void UpdateTitle(void)
 		g_pVtxBuffK[nCnt]->Lock(0, 0, (void**)&pVtx, 0);
 
 		//頂点座標設定
-		pVtx[0].pos = D3DXVECTOR3(g_posK.x - (SCREEN_WIDTH / 2.0f), g_posK.y - (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * nCntColor) * 10.0f), 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(g_posK.x + (SCREEN_WIDTH / 2.0f), g_posK.y - (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * nCntColor) * 10.0f), 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(g_posK.x - (SCREEN_WIDTH / 2.0f), g_posK.y + (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * nCntColor) * 10.0f), 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(g_posK.x + (SCREEN_WIDTH / 2.0f), g_posK.y + (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * nCntColor) * 10.0f), 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(g_posK.x - (SCREEN_WIDTH / 2.0f), g_posK.y - (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * g_fCntColor) * 10.0f), 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(g_posK.x + (SCREEN_WIDTH / 2.0f), g_posK.y - (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * g_fCntColor) * 10.0f), 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(g_posK.x - (SCREEN_WIDTH / 2.0f), g_posK.y + (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * g_fCntColor) * 10.0f), 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(g_posK.x + (SCREEN_WIDTH / 2.0f), g_posK.y + (SCREEN_HEIGHT / 2.0f) + (sinf((D3DX_PI / 100.0f) * g_fCntColor) * 10.0f), 0.0f);
 
 		//頂点バッファをアンロックする
 		g_pVtxBuffK[nCnt]->Unlock();
 	}
 
-	if (GetKeyboardTrigger(DIK_RETURN) == true)
+	if (GetKeyboardTrigger(DIK_RETURN) == true && g_bTitle == false)
 	{
 		//モード設定(ゲーム画面に移行)
 		SetFade(MODE_RULE);
+
+		g_bTitle = true;
 	}
 }
 

@@ -31,6 +31,7 @@
 #include "deletemodel.h"
 #include "explosion.h"
 #include "mouse.h"
+#include "pause.h"
 
 //グローバル変数宣言
 bool g_bPause = false;		//ポーズ中かどうか
@@ -40,6 +41,8 @@ bool g_bPause = false;		//ポーズ中かどうか
 //---------------------------------------------------
 void InitGame(void)
 {
+	//ポーズ画面の初期化処理
+	InitPause();
 
 	//カメラの初期設定
 	InitCamera();
@@ -107,6 +110,7 @@ void InitGame(void)
 	//壁の初期設定
 	InitWall();
 
+	//マップの設定
 	SetMap();
 
 	g_bPause = false;		//ポーズ解除
@@ -191,6 +195,9 @@ void UninitGame(void)
 
 	//マウスの終了処理
 	UninitMouse();
+
+	//ポーズ画面の終了処理
+	UninitPause();
 }
 
 //---------------------------------------------------
@@ -198,96 +205,88 @@ void UninitGame(void)
 //---------------------------------------------------
 void UpdateGame(void)
 {
-	if (GetKeyboardTrigger(DIK_H) == true)
-	{
-		//モード設定(ゲーム画面に移行)
-		//SetFade(MODE_RESULT);
+	if (GetKeyboardTrigger(DIK_P) == true)
+	{//ポースキー(Pキー)が押された
+		g_bPause = g_bPause ? false : true;
 	}
-	else
+
+	if (g_bPause == true)
 	{
-		if (GetKeyboardTrigger(DIK_P) == true)
-		{//ポースキー(Pキー)が押された
-			g_bPause = g_bPause ? false : true;
-		}
-
-		if (g_bPause == true)
-		{
-			//ポーズの更新処理
-			//UpdatePause();
-		}
-
-		if (g_bPause == false)
-		{//ポーズ中でなければ
-			//カメラの更新処理
-			UpdateCamera();
-
-			//マウスの更新処理
-			UpdateMouse();
-
-			//ライトの更新処理
-			UpdateLight();
-
-			//タイマーの更新処理
-			UpdateTime();
-
-			//ポリゴンの更新処理
-			UpdatePolygon();
-
-			//エフェクトの更新処理
-			UpdateEffect();
-
-			//パーティクルの更新処理
-			UpdateParticle();
-
-			//メッシュフィールドの更新処理
-			UpdateMeshfield();
-
-			//メッシュ(円柱)の更新処理
-			UpdateMeshCylinder();
-
-			//メッシュ(半球)の更新処理
-			UpdateMeshSphere();
-
-			//プレイヤーの更新処理
-			UpdatePlayer();
-
-			//敵の更新処理
-			UpdateEnemy();
-
-			//爆発の更新処理
-			UpdateExplosion();
-
-			//当たり判定の更新処理
-			UpdateCollision();
-
-			//モデルの更新処理
-			UpdateModel();
-
-			//破壊後モデルの更新処理
-			UpdateDeleteModel();
-
-			//ラインの更新処理
-			UpdateLine();
-
-			//影の更新処理
-			UpdateShadow();
-
-			//ビルボードの更新処理
-			UpdateBillboard();
-
-			//ライフゲージの更新処理
-			UpdateGage();
-
-			//スコアゲージの更新処理
-			UpdateScoreGage();
-
-			//弾の更新処理
-			UpdateBullet();
-
-			//壁の更新処理
-			UpdateWall();
-		}
+		//ポーズ画面の更新処理
+		UpdatePause();
 	}
+
+	if (g_bPause == false)
+	{//ポーズ中でなければ
+		//カメラの更新処理
+		UpdateCamera();
+
+		//ライトの更新処理
+		UpdateLight();
+
+		//タイマーの更新処理
+		UpdateTime();
+
+		//ポリゴンの更新処理
+		UpdatePolygon();
+
+		//エフェクトの更新処理
+		UpdateEffect();
+
+		//パーティクルの更新処理
+		UpdateParticle();
+
+		//メッシュフィールドの更新処理
+		UpdateMeshfield();
+
+		//メッシュ(円柱)の更新処理
+		UpdateMeshCylinder();
+
+		//メッシュ(半球)の更新処理
+		UpdateMeshSphere();
+
+		//プレイヤーの更新処理
+		UpdatePlayer();
+
+		//敵の更新処理
+		UpdateEnemy();
+
+		//爆発の更新処理
+		UpdateExplosion();
+
+		//当たり判定の更新処理
+		UpdateCollision();
+
+		//モデルの更新処理
+		UpdateModel();
+
+		//破壊後モデルの更新処理
+		UpdateDeleteModel();
+
+		//ラインの更新処理
+		UpdateLine();
+
+		//影の更新処理
+		UpdateShadow();
+
+		//ビルボードの更新処理
+		UpdateBillboard();
+
+		//ライフゲージの更新処理
+		UpdateGage();
+
+		//スコアゲージの更新処理
+		UpdateScoreGage();
+
+		//弾の更新処理
+		UpdateBullet();
+
+		//壁の更新処理
+		UpdateWall();
+	}
+
+	//マウスの更新処理
+	UpdateMouse();
 }
 
 //---------------------------------------------------
@@ -302,6 +301,7 @@ void DrawGame(void)
 
 	pDevice->GetViewport(&viewport);
 
+	//カメラの情報取得
 	CAMERA * pCamera = GetCamera();
 
 	for (int i = 0; i < 2; i++)
@@ -383,14 +383,17 @@ void DrawGame(void)
 
 		if (g_bPause == true)
 		{
-			//ポーズの描画処理
-			//DrawPause();
+			//ポーズ画面の描画処理
+			DrawPause();
 		}
 	}
 
 	pDevice->SetViewport(&viewport);
 }
 
+//---------------------------------------------------
+//	ポーズ中かどうかの情報
+//---------------------------------------------------
 bool * GetPause(void)
 {
 	return &g_bPause;

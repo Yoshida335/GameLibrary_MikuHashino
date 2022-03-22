@@ -10,6 +10,8 @@
 LPDIRECT3DTEXTURE9 g_pTextureRule = NULL;				//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRule = NULL;			//頂点バッファへのポインタ
 
+bool g_bRule;		//ルール画面1回だけ起動用
+
 //----------------------------------------
 //  チュートリアルの初期化設定処理
 //----------------------------------------
@@ -70,6 +72,8 @@ void InitRule(void)
 
 	//頂点バッファをアンロックする
 	g_pVtxBuffRule->Unlock();
+
+	g_bRule = false;
 }
 
 //----------------------------------------
@@ -100,12 +104,13 @@ void UninitRule(void)
 //----------------------------------------
 void UpdateRule(void)
 {
-	if (GetKeyboardPress(DIK_RETURN) == true)
+	if (GetKeyboardPress(DIK_RETURN) == true && g_bRule == false)
 	{
 		//モード設定(ゲーム画面に移行)
 		SetFade(MODE_GAME);
-	}
 
+		g_bRule = true;
+	}
 }
 
 //----------------------------------------

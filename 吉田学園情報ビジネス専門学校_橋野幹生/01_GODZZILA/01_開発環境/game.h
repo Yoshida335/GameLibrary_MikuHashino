@@ -13,5 +13,6 @@ void InitGame(void);		//ゲーム画面の初期化
 void UninitGame(void);		//ゲーム画面の終了
 void UpdateGame(void);		//ゲーム画面の更新
 void DrawGame(void);		//ゲーム画面の描画
+bool * GetPause(void);
 
 #endif

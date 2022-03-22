@@ -20,7 +20,7 @@
 #pragma comment(lib, "dxguid.lib")		//DirectXコンポート(部品)に必要
 #pragma comment(lib, "winmm.lib")		//システム時刻取得に必要
 #pragma comment(lib, "dinput8.lib")		//入力処理に必要
-#pragma comment(lib, "dxguid.lib")		//マウス入力に必要かも
+#pragma comment(lib, "dxguid.lib")		//入力処理に必要
 #pragma comment(lib, "xinput.lib")		//ジョイパッド処理に必要
 
 //マクロ定義

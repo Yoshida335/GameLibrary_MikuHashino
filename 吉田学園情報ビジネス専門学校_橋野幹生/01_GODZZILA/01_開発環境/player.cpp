@@ -32,25 +32,26 @@ int nCntFrame = 0;		//総再生フレーム数
 int nNowKeySet = 0;					//現在再生中のKeySet番号
 int nNextKeySet = nNowKeySet + 1;	//次に再生するKeySet番号
 int g_nPlayMotion = 0;	//現在再生中のモーション番号
-int g_MaxSetMotion;
+bool bPressLbutton;
+bool bPressRbutton;
 
 //マクロ定義
-#define MOTION_PAS	("data\\motion.txt")
+#define MOTION_PAS	("data\\motion.txt")	//プレイヤーのモーションテキスト
 
 //パーツセットの構造体
 typedef struct
 {
-	int nIndex;
-	int nParent;
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 rot;
+	int nIndex;			//自分の番号
+	int nParent;		//親
+	D3DXVECTOR3 pos;	//位置
+	D3DXVECTOR3 rot;	//角度
 }PARTSSET;
 
 //Keyの構造体
 typedef struct
 {
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 rot;
+	D3DXVECTOR3 pos;	//位置
+	D3DXVECTOR3 rot;	//角度
 }Key;
 
 //KeySetの構造体
@@ -68,20 +69,17 @@ typedef struct
 	KeySet KeySet[20];		//設定してあるキー
 }MOTIONSET;
 
-int g_nNumParts;
-
+int g_nNumParts;			//パーツ数
 PARTSSET PartsSet[20];		//読み込んだパーツの情報を入れる変数
 MOTIONSET MotionSet[10];	//読み込んだモーション情報を入れる変数
 char cModelPas[20][256];	//モデルのパスを読み込む用
 D3DXVECTOR3 MotionDiff[20];
 
-Test g_test;
+SetPlayer g_SetPlayer;
 int g_nSelectMotion;	//モーション選択用
 
 
-D3DXMATERIAL * g_pMat;			//マテリアルデータへのポインタ
-
-#include <windows.h>
+D3DXMATERIAL * g_pMat;	//マテリアルデータへのポインタ
 
 //---------------------------------------------------
 //	モデルをファイルから読み込み
@@ -124,7 +122,7 @@ void LoadModel(void)
 				fscanf(pFile, "%d", &nCntParts);
 
 				for (int i = 0, nCntModel = 0; i < nCntParts; i++, nCntModel++)
-				{
+				{//モデルパーツ数分回す
 					do
 					{//"MODEL_FILENAME"と一致するまで回す
 						fscanf(pFile, "%s", &cData[0]);
@@ -332,11 +330,13 @@ void InitPlayer(void)
 	g_Player.vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//頂点の最小値を取得用
 	g_Player.vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//頂点の最大値を取得用
 	g_Player.size = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//サイズ保存用
-	g_Player.bIsJumping = false;
-	g_Player.PlayerRot = ROT_UP;
+	g_Player.bIsJumping = false;	//ジャンプしているかどうか
 	g_Player.nLife = 100;
 
-	g_test.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	bPressLbutton = false;
+	bPressRbutton = false;
+
+	g_SetPlayer.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_nSelectMotion = 1;
 
 	//影を設定
@@ -374,15 +374,15 @@ void InitPlayer(void)
 	g_Player.size.y = g_Player.vtxMax.y - g_Player.vtxMin.y;
 	g_Player.size.z = g_Player.vtxMax.z - g_Player.vtxMin.z;
 
-	g_test.pos = D3DXVECTOR3(g_Player.pos.x, g_Player.pos.y + 50.0f, g_Player.pos.z);
-	g_test.posOld = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	g_test.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	g_test.vtxMin = D3DXVECTOR3(-5.0f, 0.0f, -5.0f);
-	g_test.vtxMax = D3DXVECTOR3(5.0f, 10.0f, 5.0f);
+	g_SetPlayer.pos = D3DXVECTOR3(g_Player.pos.x, g_Player.pos.y + 50.0f, g_Player.pos.z);
+	g_SetPlayer.posOld = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	g_SetPlayer.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	g_SetPlayer.vtxMin = D3DXVECTOR3(-5.0f, 0.0f, -5.0f);
+	g_SetPlayer.vtxMax = D3DXVECTOR3(5.0f, 10.0f, 5.0f);
 
-	g_test.size.x = g_test.vtxMax.x - g_test.vtxMin.x;
-	g_test.size.y = g_test.vtxMax.y - g_test.vtxMin.y;
-	g_test.size.z = g_test.vtxMax.z - g_test.vtxMin.z;
+	g_SetPlayer.size.x = g_SetPlayer.vtxMax.x - g_SetPlayer.vtxMin.x;
+	g_SetPlayer.size.y = g_SetPlayer.vtxMax.y - g_SetPlayer.vtxMin.y;
+	g_SetPlayer.size.z = g_SetPlayer.vtxMax.z - g_SetPlayer.vtxMin.z;
 
 	SetScoreGage(D3DXVECTOR3(650.0f, SCREEN_HEIGHT - (200.0f / 2.0f), 0.0f), g_Player.nLife);
 }
@@ -447,8 +447,9 @@ void UpdatePlayer(void)
 
 	//プレイヤーの現在の位置を保存
 	g_Player.posOld = g_Player.pos;
+
 	//パーツの現在の位置を保存
-	g_test.posOld = g_test.pos;
+	g_SetPlayer.posOld = g_SetPlayer.pos;
 
 	//パーツの現在の位置を保存
 	for (int nCntParts = 0; nCntParts < MAX_PARTS; nCntParts++)
@@ -456,10 +457,11 @@ void UpdatePlayer(void)
 		g_Player.aModel[nCntParts].posOld = g_Player.aModel[nCntParts].pos;
 	}
 
-	//プレイヤーの移動処理
-	MovePlayer();
+	//プレイヤーの操作
+	ControlPlayer();
+
 	//パーツの移動
-	g_test.pos = D3DXVECTOR3(g_Player.pos.x, g_Player.pos.y + 50.0f, g_Player.pos.z - g_Player.vtxMax.z - 20.0f);
+	g_SetPlayer.pos = D3DXVECTOR3(g_Player.pos.x, g_Player.pos.y + 50.0f, g_Player.pos.z - g_Player.vtxMax.z - 20.0f);
 
 	//重力を加算
 	g_Player.pos.y += g_Player.move.y;
@@ -467,6 +469,7 @@ void UpdatePlayer(void)
 	//プレイヤーとモデルの当たり判定
 	CollisionModel(&g_Player.pos, &g_Player.posOld, g_Player.size, &g_Player.move);
 
+	//敵が攻撃してきた弾の当たり判定
 	CollisionBullet(&g_Player.pos, &g_Player.posOld, g_Player.size, &g_Player.move);
 
 	//ジャンプの可否
@@ -479,17 +482,17 @@ void UpdatePlayer(void)
 		g_Player.bIsJumping = false;
 	}
 
+	//移動範囲の設定
 	if ((g_Player.pos.x + (g_Player.size.x / 2.0f)) >= 300.0f)
-	{
+	{//ｘ軸
 		g_Player.pos.x = 300.0f - (g_Player.size.x / 2.0f);
 	}
 	else if ((g_Player.pos.x - (g_Player.size.x / 2.0f)) <= -300.0f)
 	{
 		g_Player.pos.x = -300.0f + (g_Player.size.x / 2.0f);
 	}
-
 	if ((g_Player.pos.z + (g_Player.size.z / 2.0f)) >= 300.0f)
-	{
+	{//ｚ軸
 		g_Player.pos.z = 300.0f - (g_Player.size.z / 2.0f);
 	}
 	else if ((g_Player.pos.z - (g_Player.size.z / 2.0f)) <= -300.0f)
@@ -509,12 +512,12 @@ void UpdatePlayer(void)
 
 	MotionPlayer(g_nSelectMotion);		//モーション設定
 
-	g_test.pos.x = g_Player.pos.x;
-	g_test.pos.z = g_Player.pos.z;
-	g_test.rot = g_Player.rot;
+	g_SetPlayer.pos.x = g_Player.pos.x;
+	g_SetPlayer.pos.z = g_Player.pos.z;
+	g_SetPlayer.rot = g_Player.rot;
 
-	g_test.pos.x = sinf(g_test.rot.y) * -50.0f;
-	g_test.pos.z = cosf(g_test.rot.y) * -50.0f;
+	g_SetPlayer.pos.x = sinf(g_SetPlayer.rot.y) * -50.0f;
+	g_SetPlayer.pos.z = cosf(g_SetPlayer.rot.y) * -50.0f;
 
 	//歩いてる時のモーションの設定
 	if (g_nSelectMotion != 0)
@@ -528,11 +531,32 @@ void UpdatePlayer(void)
 			SetMotion(1);
 		}
 	}
+}
 
-	if ((GetKeyState(VK_LBUTTON) & 0x80))
+void ControlPlayer(void)
+{
+	//プレイヤーの移動処理
+	MovePlayer();
+
+	//マウスの左ボタンを押したとき、
+	if ((GetKeyState(VK_LBUTTON) & 0x80) && bPressLbutton == false)
 	{//攻撃したとき
-		SetCollision(D3DXVECTOR3(g_Player.pos.x + g_test.pos.x, g_test.pos.y, g_Player.pos.z + g_test.pos.z), D3DXVECTOR3(g_Player.posOld.x + g_test.posOld.x, g_test.posOld.y, g_Player.posOld.z + g_test.posOld.z), g_test.rot);
+		SetCollision(D3DXVECTOR3(g_Player.pos.x + g_SetPlayer.pos.x, g_SetPlayer.pos.y, g_Player.pos.z + g_SetPlayer.pos.z), D3DXVECTOR3(g_Player.posOld.x + g_SetPlayer.posOld.x, g_SetPlayer.posOld.y, g_Player.posOld.z + g_SetPlayer.posOld.z), g_SetPlayer.rot);
 		SetMotion(0);
+		bPressLbutton = true;
+	}
+
+	if (WM_LBUTTONUP)
+	{
+		bPressLbutton = false;
+	}
+
+	//マウスの右ボタンを押したとき
+	if ((GetKeyState(VK_RBUTTON) & 0x80) && bPressRbutton == false)
+	{//攻撃したとき
+		SetCollision(D3DXVECTOR3(g_Player.pos.x + g_SetPlayer.pos.x, g_SetPlayer.pos.y, g_Player.pos.z + g_SetPlayer.pos.z), D3DXVECTOR3(g_Player.posOld.x + g_SetPlayer.posOld.x, g_SetPlayer.posOld.y, g_Player.posOld.z + g_SetPlayer.posOld.z), g_SetPlayer.rot);
+		SetMotion(0);
+		bPressRbutton = true;
 	}
 }
 
@@ -547,6 +571,17 @@ void MotionPlayer(int nPlayMotion)
 		{
 			SetMotion(1);
 		}
+
+		if (bPressLbutton == true)
+		{
+			bPressLbutton = false;
+		}
+
+		if (bPressRbutton == true)
+		{
+			bPressRbutton = false;
+		}
+
 		return;
 	}
 
@@ -817,6 +852,7 @@ void HitModel(int nDamage)
 	//サウンドの再生
 	PlaySound(SOUND_LABEL_SE_K);
 
+	//タイムの情報を入手
 	int * pTime = GetTime();
 
 	if (g_Player.nLife <= 0)

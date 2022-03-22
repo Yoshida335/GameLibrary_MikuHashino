@@ -80,12 +80,11 @@ void UninitKeyboard(void)
 void UpdateKeyboard(void)
 {
 	BYTE aKeyState[NUM_KEY_MAX];		//キーボードの入力情報
-	int nCntKey;
 
 	//入力デバイスからデータを取得
 	if (SUCCEEDED(g_pDevKeyboard->GetDeviceState(sizeof(aKeyState), &aKeyState[0])))
 	{
-		for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
+		for (int nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
 		{
 			//キーボードのトリガー情報を保存
 			g_aKeyStateTrigger[nCntKey] = (aKeyState[nCntKey] ^ g_aKeyState[nCntKey]) & aKeyState[nCntKey];

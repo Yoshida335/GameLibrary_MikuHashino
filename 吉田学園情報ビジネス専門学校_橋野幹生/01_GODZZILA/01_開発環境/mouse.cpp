@@ -52,12 +52,3 @@ void DrawMouse(void)
 {
 
 }
-
-void SetMouse(void)
-{
-	RECT rect;
-
-	GetWindowRect(g_hWnd, &rect);
-
-	SetCursorPos(rect.left + SCREEN_WIDTH / 2, rect.top + SCREEN_HEIGHT / 2);
-}

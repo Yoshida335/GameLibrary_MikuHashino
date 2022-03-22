@@ -189,14 +189,6 @@ void InitModel(void)
 		//頂点バッファをアンロック
 		g_pMeshModel[i]->UnlockVertexBuffer();
 	}
-
-	//自意識過剰寺院
-	//この冬初クリア爺さん
-
-	//SetModel(D3DXVECTOR3(200.0f, 0.0f, 50.0f),	//位置
-	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),	//角度
-	//	TYPE_BILL_01,	//種類
-	//	5);			//体力
 }
 
 //---------------------------------------------------

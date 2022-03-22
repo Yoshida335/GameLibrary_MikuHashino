@@ -26,6 +26,7 @@ LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRanking = NULL;		//頂点バッファへのポインタ
 LPDIRECT3DTEXTURE9 g_pTextureRank = NULL;			//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRank = NULL;		//頂点バッファへのポインタ
 D3DXVECTOR3 rankpos[MAX_RANK];
+bool g_bRanking;		//ランキング1回だけ起動用
 
 //----------------------------------------
 //  ランキングの初期化設定処理
@@ -63,6 +64,8 @@ void InitRanking(void)
 			g_aRankpos[g_nCntY][nCntRank] = D3DXVECTOR3(430.0f + (70.0f * nCntRank), 180.0f + (120.0f * g_nCntY), 0.0f);		//位置の初期
 		}
 	}
+
+	g_bRanking = false;
 
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * 8 * MAX_RANK,
 		D3DUSAGE_WRITEONLY,
@@ -252,10 +255,12 @@ void UninitRanking(void)
 //----------------------------------------
 void UpdateRanking(void)
 {
-	if (GetKeyboardTrigger(DIK_RETURN) == true)
+	if (GetKeyboardTrigger(DIK_RETURN) == true && g_bRanking == false)
 	{
 		//モード設定(ゲーム画面に移行)
 		SetFade(MODE_TITLE);
+
+		g_bRanking = true;
 	}
 }
 

@@ -13,11 +13,10 @@
 LPDIRECT3DTEXTURE9 g_pTextureTime = NULL;		//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTime = NULL;
 D3DXVECTOR3 g_posTime[3];	//タイムの数
-D3DXVECTOR3 g_posTT;
 int g_nTime;				//現在のタイム
 int g_nCntTime;				//カウントタイム
-TIME g_TimeState;
-int g_nOneTimer;			//一回だけ起動する用
+TIME g_TimeState;			//タイムの状態
+bool g_bFinishTime = false;	//タイム終了時の画面遷移を一回起動する用
 
 //----------------------------------------
 //  タイムの初期化設定処理
@@ -39,11 +38,10 @@ void InitTime(void)
 	{
 		g_posTime[nCntT] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//位置の初期
 	}
-	g_posTT = D3DXVECTOR3(1050.0f, 100.0f, 0.0f);
-	g_nTime = 30;					//タイムの初期化
-	g_nCntTime = 60;
-	g_TimeState = TIME_ON;
-	g_nOneTimer = 0;
+	g_nTime = 30;				//タイムの初期化
+	g_nCntTime = 60;			//タイムの更新時間初期化
+	g_TimeState = TIME_ON;		//タイムの状態初期化(起動中)
+	g_bFinishTime = false;		//falseにする
 
 	//頂点バッファの設定
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * 8,
@@ -59,7 +57,7 @@ void InitTime(void)
 	g_pVtxBuffTime->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntT = 0; nCntT < 3; nCntT++)
-	{
+	{//タイムの位置設定
 		g_posTime[nCntT] = D3DXVECTOR3(35.0f * nCntT + (SCREEN_WIDTH / 2) - 35.0f, 40.0f, 0.0f);
 	}
 
@@ -123,13 +121,12 @@ void UpdateTime(void)
 {
 	int nTimePos[3];
 
-	int nWork = 0;
-
 	switch (g_TimeState)
 	{
-	case TIME_ON:
+	case TIME_ON:	//タイム起動中(ゲーム開始)
 		if (g_nTime != 0)
 		{//現在の時間が０じゃなかったら
+		 //カウント数を1減らす
 			g_nCntTime--;
 		}
 
@@ -138,18 +135,21 @@ void UpdateTime(void)
 			g_nTime--;
 
 			if (g_nTime % 10 == 0)
-			{
+			{//時間経過でエネミー出現
+				//エネミーの出現位置を持ってくる(map.cpp)
 				SetPos * pSetEnemyPos = GetSetPos();
 			
 				for (int i = 0; i < 4; i++)
-				{
+				{//エネミー出現
 					SetEnemy(pSetEnemyPos->Setpos[i], D3DXVECTOR3(0.0f, 0.0f, 0.0f), TYPE_ENEMY_01, 1);
 				}
 			}
 
+			//カウント数をリセット
 			g_nCntTime = 60;
 		}
 
+		//現在時刻からタイムのテクスチャ座標を計算
 		nTimePos[0] = g_nTime % 1000 / 100;
 		nTimePos[1] = g_nTime % 100 / 10;
 		nTimePos[2] = g_nTime % 10;
@@ -175,18 +175,18 @@ void UpdateTime(void)
 
 		if (g_nTime <= 0)
 		{//タイムが０以下になったら
-			g_TimeState = TIME_OFF;
+			g_TimeState = TIME_OFF;	//タイムオフにする
 		}
 
 		break;
 
-	case TIME_OFF:
-		if(g_nOneTimer == 0)
-		{
+	case TIME_OFF:	//タイムオフ(ゲーム終了)
+		if(g_bFinishTime == false)
+		{//一回だけ起動する
 			//モード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT);
 
-			g_nOneTimer = 1;
+			g_bFinishTime = true;
 		}
 
 		break;

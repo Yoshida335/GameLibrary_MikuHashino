@@ -19,4 +19,3 @@ void UpdatePolygon(void);	//ポリゴンの更新
 void DrawPolygon(void);		//ポリゴンの描画
 
 #endif
-

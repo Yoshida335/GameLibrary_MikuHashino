@@ -51,6 +51,7 @@ ResultScore g_ResultS[MAX_RESULT];
 Sign g_Sign[MAX_SIGN];
 int g_aPosTexU[MAX_RESULT][5];	//各桁の数字を格納
 int g_FinishResultScore = 0;
+bool g_bResult;		//リザルト1回だけ起動用
 
 //----------------------------------------
 //　リザルト情報をロード
@@ -304,6 +305,8 @@ void InitResult(void)
 
 	//サウンドの再生
 	PlaySound(SOUND_LABEL_BGM_RESULT);
+
+	g_bResult = false;
 }
 
 //----------------------------------------
@@ -359,10 +362,12 @@ void UninitResult(void)
 //----------------------------------------
 void UpdateResult(void)
 {
-	if (GetKeyboardTrigger(DIK_RETURN) == true)
+	if (GetKeyboardTrigger(DIK_RETURN) == true && g_bResult == false)
 	{
 		//モード設定(ゲーム画面に移行)
 		SetFade(MODE_RANKING);
+
+		g_bResult = true;
 	}
 
 	VERTEX_2D * pVtx;	//頂点情報へのポインタ

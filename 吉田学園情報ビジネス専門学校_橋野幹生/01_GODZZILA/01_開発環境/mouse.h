@@ -14,4 +14,3 @@ void UpdateMouse(void);		//マウスの更新
 void DrawMouse(void);		//マウスの描画
 
 #endif
-

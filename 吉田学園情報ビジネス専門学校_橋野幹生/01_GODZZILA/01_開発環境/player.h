@@ -37,15 +37,7 @@ typedef struct
 	D3DXVECTOR3 vtxMin;		//頂点の最小値を取得用
 	D3DXVECTOR3 vtxMax;		//頂点の最大値を取得用
 	D3DXVECTOR3 size;		//サイズ保存用
-}Test;
-
-typedef enum
-{
-	ROT_UP = 0,
-	ROT_DOWN,
-	ROT_RIGHT,
-	ROT_LEFT
-}PlayerRot;
+}SetPlayer;
 
 //プレイヤーの構造体
 typedef struct
@@ -62,8 +54,7 @@ typedef struct
 	D3DXVECTOR3 vtxMax;		//頂点の最大値を取得用
 	D3DXVECTOR3 size;		//サイズ保存用
 	ModelParts aModel[MAX_PARTS];	//モデルの情報[最大パーツ数分]
-	bool bIsJumping;
-	PlayerRot PlayerRot;
+	bool bIsJumping;		//ジャンプしているかどうか
 	int nLife;				//体力
 }Player;
 
@@ -76,7 +67,8 @@ void MovePlayer(void);		//プレイヤーの移動
 Player * GetPlayer(void);	//プレイヤーの情報
 void MotionPlayer(int nMotion);		//プレイヤーのモーション設定
 void SetMotion(int nSet);	//モーションを設定する
-void HitModel(int nDamage);
+void HitModel(int nDamage);	//プレイヤーの攻撃ヒットした時の処理
 bool CollisionPlayer(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);
+void ControlPlayer(void);	//プレイヤーの操作に関する処理
 
 #endif
