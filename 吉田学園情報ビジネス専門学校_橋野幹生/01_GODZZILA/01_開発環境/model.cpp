@@ -404,7 +404,7 @@ bool CollisionModel(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size, D3D
 					 //*pos.zにモデルのpos.z(手前側)を設定
 						pos->z = g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMin.z - (size.z/ 2);
 					}
-					else if (posOld->z + (size.z/ 2) >= g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z &
+					else if (posOld->z + (size.z/ 2) >= g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z &&
 						pos->z - (size.z/ 2) < g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z)
 					{//モデルの奥側からめり込んだ時
 					 //*pos.zにモデルのpos.z(奥側)を設定

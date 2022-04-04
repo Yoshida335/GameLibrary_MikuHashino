@@ -533,26 +533,23 @@ void UpdatePlayer(void)
 	}
 }
 
+//---------------------------------------------------
+//	プレイヤーの行動処理
+//---------------------------------------------------
 void ControlPlayer(void)
 {
 	//プレイヤーの移動処理
 	MovePlayer();
 
 	//マウスの左ボタンを押したとき、
-	if ((GetKeyState(VK_LBUTTON) & 0x80) && bPressLbutton == false)
+	if (GetMouseTrigger(MOUSE_INPUT_LEFT))
 	{//攻撃したとき
 		SetCollision(D3DXVECTOR3(g_Player.pos.x + g_SetPlayer.pos.x, g_SetPlayer.pos.y, g_Player.pos.z + g_SetPlayer.pos.z), D3DXVECTOR3(g_Player.posOld.x + g_SetPlayer.posOld.x, g_SetPlayer.posOld.y, g_Player.posOld.z + g_SetPlayer.posOld.z), g_SetPlayer.rot);
 		SetMotion(0);
-		bPressLbutton = true;
-	}
-
-	if (WM_LBUTTONUP)
-	{
-		bPressLbutton = false;
 	}
 
 	//マウスの右ボタンを押したとき
-	if ((GetKeyState(VK_RBUTTON) & 0x80) && bPressRbutton == false)
+	if (GetMouseTrigger(MOUSE_INPUT_RIGHT))
 	{//攻撃したとき
 		SetCollision(D3DXVECTOR3(g_Player.pos.x + g_SetPlayer.pos.x, g_SetPlayer.pos.y, g_Player.pos.z + g_SetPlayer.pos.z), D3DXVECTOR3(g_Player.posOld.x + g_SetPlayer.posOld.x, g_SetPlayer.posOld.y, g_Player.posOld.z + g_SetPlayer.posOld.z), g_SetPlayer.rot);
 		SetMotion(0);

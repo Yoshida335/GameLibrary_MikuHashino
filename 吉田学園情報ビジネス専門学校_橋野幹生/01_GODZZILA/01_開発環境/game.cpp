@@ -1,7 +1,10 @@
-//----------------------------------------
+//================================================================
 //　ゲーム画面の処理
 //　Author：橋野幹生
-//----------------------------------------
+//================================================================
+//---------------------------------------------------
+//	インクルードファイル
+//---------------------------------------------------
 #include "game.h"
 #include "input.h"
 #include "fade.h"
@@ -17,8 +20,6 @@
 #include "billboard.h"
 #include "bullet.h"
 #include "meshfield.h"
-#include "meshcylinder.h"
-#include "meshsphere.h"
 #include "effect.h"
 #include "particle.h"
 #include "player.h"
@@ -53,9 +54,6 @@ void InitGame(void)
 	//タイマーの初期設定
 	InitTime();
 
-	//ポリゴンの初期設定
-	InitPolygon();
-
 	//エフェクトの初期設定
 	InitEffect();
 
@@ -64,12 +62,6 @@ void InitGame(void)
 
 	//メッシュフィールド(平面)の初期設定
 	InitMeshfield();
-
-	//メッシュ(円柱)の初期設定
-	InitMeshCylinder();
-
-	//メッシュ(半球)の初期設定
-	InitMeshSphere();
 
 	//影の初期設定
 	InitShadow();
@@ -101,9 +93,6 @@ void InitGame(void)
 	//当たり判定の初期設定
 	InitCollision();
 
-	//ビルボードの初期設定
-	InitBillboard();
-
 	//弾の初期設定
 	InitBullet();
 
@@ -113,7 +102,7 @@ void InitGame(void)
 	//マップの設定
 	SetMap();
 
-	g_bPause = false;		//ポーズ解除
+	g_bPause = false;		//ポーズ解除(初期化)
 
 	//サウンドの再生
 	PlaySound(SOUND_LABEL_BGM_GAME);
@@ -129,9 +118,6 @@ void UninitGame(void)
 
 	//爆発の終了処理
 	UninitExplosion();
-
-	//ビルボードの終了処理
-	UninitBillboard();
 
 	//ライフゲージの終了処理
 	UninitGage();
@@ -166,17 +152,8 @@ void UninitGame(void)
 	//プレイヤーの終了処理
 	UninitPlayer();
 
-	//ポリゴンの終了処理
-	UninitPolygon();
-
 	//メッシュフィールドの終了処理
 	UninitMeshfield();
-
-	//メッシュ(円柱)の終了処理
-	UninitMeshCylinder();
-
-	//メッシュ(半球)の終了処理
-	UninitMeshSphere();
 
 	//パーティクルの終了処理
 	UninitParticle();
@@ -227,9 +204,6 @@ void UpdateGame(void)
 		//タイマーの更新処理
 		UpdateTime();
 
-		//ポリゴンの更新処理
-		UpdatePolygon();
-
 		//エフェクトの更新処理
 		UpdateEffect();
 
@@ -238,12 +212,6 @@ void UpdateGame(void)
 
 		//メッシュフィールドの更新処理
 		UpdateMeshfield();
-
-		//メッシュ(円柱)の更新処理
-		UpdateMeshCylinder();
-
-		//メッシュ(半球)の更新処理
-		UpdateMeshSphere();
 
 		//プレイヤーの更新処理
 		UpdatePlayer();
@@ -268,9 +236,6 @@ void UpdateGame(void)
 
 		//影の更新処理
 		UpdateShadow();
-
-		//ビルボードの更新処理
-		UpdateBillboard();
 
 		//ライフゲージの更新処理
 		UpdateGage();
@@ -321,9 +286,6 @@ void DrawGame(void)
 		//マウスの描画処理
 		DrawMouse();
 
-		//ポリゴンの描画処理
-		//DrawPolygon();
-
 		//メッシュフィールドの描画処理
 		DrawMeshfield();
 
@@ -348,17 +310,8 @@ void DrawGame(void)
 		//影の描画処理
 		DrawShadow();
 
-		//メッシュ(円柱)の描画処理
-		DrawMeshCylinder();
-
-		//メッシュ(半球)の描画処理
-		DrawMeshSphere();
-
 		//壁の描画処理
 		DrawWall();
-
-		//ビルボードの描画処理
-		DrawBillboard();
 
 		//ライフゲージの描画処理
 		DrawGage();
@@ -381,7 +334,7 @@ void DrawGame(void)
 		//タイマーの描画処理
 		DrawTime();
 
-		if (g_bPause == true)
+		if (g_bPause)
 		{
 			//ポーズ画面の描画処理
 			DrawPause();

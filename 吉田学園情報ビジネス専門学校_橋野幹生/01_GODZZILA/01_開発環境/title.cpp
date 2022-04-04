@@ -237,12 +237,7 @@ void InitTitle(void)
 //----------------------------------------
 void UninitTitle(void)
 {
-	//サウンドの停止
-	//StopSound();
-
-	int nCnt;
-
-	for (nCnt = 0; nCnt < 2; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		//テクスチャの破棄
 		if (g_pTextureTitle[nCnt] != NULL)
@@ -259,7 +254,7 @@ void UninitTitle(void)
 		}
 	}
 
-	for (nCnt = 0; nCnt < 2; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		//テクスチャの破棄
 		if (g_pTextureK[nCnt] != NULL)
@@ -299,10 +294,10 @@ void UpdateTitle(void)
 	//テキストの頂点
 	VERTEX_2D * pVtx;		//頂点情報へのポインタ
 
-	g_fCntTitle += 0.0005f;
-
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffTitle[0]->Lock(0, 0, (void**)&pVtx, 0);
+
+	g_fCntTitle += 0.0005f;	//徐々に値を変更
 
 	//テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f - g_fCntTitle, 0.0f);
@@ -342,7 +337,7 @@ void UpdateTitle(void)
 		g_pVtxBuffK[nCnt]->Unlock();
 	}
 
-	if (GetKeyboardTrigger(DIK_RETURN) == true && g_bTitle == false)
+	if (GetKeyboardTrigger(DIK_RETURN) == true && !g_bTitle)
 	{
 		//モード設定(ゲーム画面に移行)
 		SetFade(MODE_RULE);
@@ -356,28 +351,28 @@ void UpdateTitle(void)
 //----------------------------------------
 void DrawTitle(void)
 {
-	int nCnt;
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
 
 	//デバイスの取得
 	pDevice = GetDevice();
 
 	//背景
-	//頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffTitle[0], 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	//テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureTitle[0]);
-
-	//ポリゴンの設定
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
-	//怪獣
-	for (nCnt = 0; nCnt < 2; nCnt++)
 	{
+		//頂点バッファをデータストリームに設定
+		pDevice->SetStreamSource(0, g_pVtxBuffTitle[0], 0, sizeof(VERTEX_2D));
+
+		//頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
+
+		//テクスチャの設定
+		pDevice->SetTexture(0, g_pTextureTitle[0]);
+
+		//ポリゴンの設定
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	}
+
+	for (int nCnt = 0; nCnt < 2; nCnt++)
+	{//怪獣
 		//頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, g_pVtxBuffK[nCnt], 0, sizeof(VERTEX_2D));
 
@@ -391,29 +386,33 @@ void DrawTitle(void)
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
 
-	//ぷれすえんたー
-	//頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffTitle[1], 0, sizeof(VERTEX_2D));
+	//PRESSENTER
+	{
+		//頂点バッファをデータストリームに設定
+		pDevice->SetStreamSource(0, g_pVtxBuffTitle[1], 0, sizeof(VERTEX_2D));
 
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+		//頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
 
-	//テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureTitle[1]);
+		//テクスチャの設定
+		pDevice->SetTexture(0, g_pTextureTitle[1]);
 
-	//ポリゴンの設定
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+		//ポリゴンの設定
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	}
 
 	//タイトルロゴ
-	//頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffLogo, 0, sizeof(VERTEX_2D));
+	{
+		//頂点バッファをデータストリームに設定
+		pDevice->SetStreamSource(0, g_pVtxBuffLogo, 0, sizeof(VERTEX_2D));
 
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+		//頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
 
-	//テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureLogo);
+		//テクスチャの設定
+		pDevice->SetTexture(0, g_pTextureLogo);
 
-	//ポリゴンの設定
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+		//ポリゴンの設定
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	}
 }

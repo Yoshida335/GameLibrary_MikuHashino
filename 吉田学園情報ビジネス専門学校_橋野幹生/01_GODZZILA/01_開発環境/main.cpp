@@ -86,7 +86,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	DWORD dwFPSLastTime;				//最後に計測した時刻
 
 	//初期化設定
-	if (FAILED(Init(hInstance, hWnd, TRUE)))
+	if (FAILED(Init(hInstance, hWnd, true)))
 	{//初期化が失敗した場合
 		return -1;
 	}
@@ -310,6 +310,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
+	InitMouse(hInstance, hWnd);
+
 	InitMouse(hWnd);
 
 	//ランキングの初期化
@@ -358,6 +360,9 @@ void Uninit(void)
 
 	//キーボードの終了処理
 	UninitKeyboard();
+
+	//マウスの終了処理
+	UninitInputMouse();
 
 	//Direct3Dデバイスの破棄
 	if (g_pD3DDevice != NULL)
@@ -409,15 +414,11 @@ void Updata(void)
 		1.0f,
 		0);
 
-	//// Zバッファに関して
-	//if (GetKeyboardTrigger(DIK_F3) == true)
-	//{
-	//	g_bBuffer = g_bBuffer ? false : true;
-	//}
-	//g_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, g_bBuffer);
-
 	//キーボードの更新処理
 	UpdateKeyboard();
+
+	//マウスの更新処理
+	UpdateInputMouse();
 
 	//マウスの更新処理
 	if (g_mode != MODE_GAME)
@@ -470,36 +471,31 @@ void Draw(void)
 	{//描画開始が成功した場合
 		switch (g_mode)
 		{
-		case MODE_TITLE:
+		case MODE_TITLE:	//タイトル画面
 			DrawTitle();
 			break;
 
-		case MODE_RULE:
+		case MODE_RULE:		//ルール画面
 			DrawRule();
 			break;
 
-		case MODE_GAME:
+		case MODE_GAME:		//ゲーム画面
 			DrawGame();
 			break;
 
-		case MODE_RESULT:
+		case MODE_RESULT:	//リザルト画面
 			DrawResult();
 			DrawScore();
 			DrawResultScore();
 			break;
 
-		case MODE_RANKING:
+		case MODE_RANKING:	//ランキング画面
 			DrawRanking();
 			break;
 		}
 
 		//フェードの描画処理
 		DrawFade();
-
-/*#ifdef _DEBUG
-		//FPS表示
-		DrawFPS();			//デバッグ(ビルド)の時だけ表示
-#endif*/
 
 		//描画終了
 		g_pD3DDevice->EndScene();
@@ -509,35 +505,41 @@ void Draw(void)
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
+//----------------------------------------
+//	デバイスの取得
+//----------------------------------------
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	return g_pD3DDevice;
 }
 
+//----------------------------------------
+//	モード選択
+//----------------------------------------
 void SetMode(MODE mode)
 {
 	//現在の画面(モード)の終了処理
 	switch (g_mode)
 	{
-	case MODE_TITLE:
+	case MODE_TITLE:	//タイトル画面
 		UninitTitle();
 		break;
 
-	case MODE_RULE:
+	case MODE_RULE:		//ルール画面
 		UninitRule();
 		break;
 
-	case MODE_GAME:
+	case MODE_GAME:		//ゲーム画面
 		UninitGame();
 		break;
 
-	case MODE_RESULT:
+	case MODE_RESULT:	//リザルト画面
 		UninitScore();
 		UninitResultScore();
 		UninitResult();
 		break;
 
-	case MODE_RANKING:
+	case MODE_RANKING:	//ランキング画面
 		UninitRanking();
 		break;
 	}
@@ -545,25 +547,25 @@ void SetMode(MODE mode)
 	//新しい画面(モード)の初期化処理
 	switch (mode)
 	{
-	case MODE_TITLE:
+	case MODE_TITLE:	//タイトル画面
 		InitTitle();
 		break;
 
-	case MODE_RULE:
+	case MODE_RULE:		//ルール画面
 		InitRule();
 		break;
 
-	case MODE_GAME:
+	case MODE_GAME:		//ゲーム画面
 		InitGame();
 		break;
 
-	case MODE_RESULT:
+	case MODE_RESULT:	//リザルト画面
 		InitScore();
 		InitResultScore();
 		InitResult();
 		break;
 
-	case MODE_RANKING:
+	case MODE_RANKING:	//ランキング画面
 		InitRanking();
 		break;
 	}
@@ -571,12 +573,17 @@ void SetMode(MODE mode)
 	g_mode = mode;
 }
 
+//----------------------------------------
+//	モードの情報
+//----------------------------------------
 MODE GetMode(void)
 {
 	return g_mode;
 }
 
-//FPSの表示
+//----------------------------------------
+//	FPSの表示
+//----------------------------------------
 void DrawFPS(void)
 {
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -588,4 +595,3 @@ void DrawFPS(void)
 	//テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
-

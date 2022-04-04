@@ -4,7 +4,7 @@
 //----------------------------------------
 #include "bg.h"
 
-LPDIRECT3DTEXTURE9 g_pTextureBg[MAX_BG] = {};			//テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureBg[MAX_BG] = {};		//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBg = NULL;		//頂点バッファへのポインタ
 
 //----------------------------------------
