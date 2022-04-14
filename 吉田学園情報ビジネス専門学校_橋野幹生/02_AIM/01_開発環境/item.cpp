@@ -1,21 +1,25 @@
+//----------------------------------------
+//	アイテムの処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "item.h"
 #include "score.h"
 #include "sound.h"
 
 //グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_pTextureItem[ITEM_TYPE_MAX] = {};
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffItem = NULL;
+LPDIRECT3DTEXTURE9 g_pTextureItem[ITEM_TYPE_MAX] = {};	//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffItem = NULL;			//頂点バッファへのポインタ
 ITEM g_Item[MAX_ITEM];
-int g_nCntCoin;
+int g_nCntCoin;		//消えたコインの枚数
 
 //----------------------------------------
 //　アイテムの初期化処理
 //----------------------------------------
 void InitItem(void)
 {
+	g_nCntCoin = 0;		// 値を初期状態にする
+
 	LPDIRECT3DDEVICE9 pDevice;
-	int nCntItem;
-	g_nCntCoin = 0;
 
 	//デバイスの取得
 	pDevice = GetDevice();
@@ -24,33 +28,23 @@ void InitItem(void)
 	D3DXCreateTextureFromFile(
 		pDevice,
 		"data\\TEXTURE\\coin000.png",
-		&g_pTextureItem[ITEM_TYPE_0]);
-
-	D3DXCreateTextureFromFile(
-		pDevice,
-		"data\\TEXTURE\\shoes.png",
-		&g_pTextureItem[ITEM_TYPE_1]);
+		&g_pTextureItem[ITEM_COIN]);
 
 	D3DXCreateTextureFromFile(
 		pDevice,
 		"data\\TEXTURE\\key001.png",
-		&g_pTextureItem[ITEM_TYPE_3]);
-
-	D3DXCreateTextureFromFile(
-		pDevice,
-		"data\\TEXTURE\\shoes.png",
-		&g_pTextureItem[ITEM_TYPE_4]);
+		&g_pTextureItem[ITEM_KEY]);
 
 	//アイテムの初期化
-	for (nCntItem = 0; nCntItem < MAX_ITEM; nCntItem++)
+	for (int nCntItem = 0; nCntItem < MAX_ITEM; nCntItem++)
 	{
-		g_Item[nCntItem].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_Item[nCntItem].fWidth = ITEM_WIDTH;
-		g_Item[nCntItem].fHeight = ITEM_HEIGHT;
-		g_Item[nCntItem].nCounterAnim = 0;
-		g_Item[nCntItem].nPatternAnim = 0;
-		g_Item[nCntItem].type = ITEM_TYPE_0;
-		g_Item[nCntItem].bUse = false;
+		g_Item[nCntItem].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//位置
+		g_Item[nCntItem].fWidth = ITEM_WIDTH;	//幅
+		g_Item[nCntItem].fHeight = ITEM_HEIGHT;	//高さ
+		g_Item[nCntItem].nCounterAnim = 0;		//アニメーションカウンタ
+		g_Item[nCntItem].nPatternAnim = 0;		//アニメーションパターン
+		g_Item[nCntItem].type = ITEM_COIN;	//種類
+		g_Item[nCntItem].bUse = false;			//使っているかどうか
 	}
 
 	//頂点バッファの設定
@@ -66,7 +60,7 @@ void InitItem(void)
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffItem->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (nCntItem = 0; nCntItem < MAX_ITEM; nCntItem++)
+	for (int nCntItem = 0; nCntItem < MAX_ITEM; nCntItem++)
 	{
 		//頂点座標更新
 		pVtx[0].pos = D3DXVECTOR3(g_Item[nCntItem].pos.x - (ITEM_WIDTH / 2), g_Item[nCntItem].pos.y - (ITEM_HEIGHT / 2), 0.0f);
@@ -138,7 +132,7 @@ void UpdateItem(void)
 		{
 			switch (g_Item[nCntItem].type)
 			{
-			case ITEM_TYPE_0:
+			case ITEM_COIN:
 				g_Item[nCntItem].nCounterAnim += 1;
 
 				if ((g_Item[nCntItem].nCounterAnim % 15) == 0)
@@ -154,12 +148,14 @@ void UpdateItem(void)
 				pVtx[3].tex = D3DXVECTOR2(0.25f * g_Item[nCntItem].nPatternAnim + 0.25f, 1.0f);
 				break;
 
-			case ITEM_TYPE_1:
+			case ITEM_KEY:
 				break;
 
+			default:
+				break;
 			}
 		}
-		pVtx += 4;
+		pVtx += 4;		//頂点データのポインタを4つ分進める
 	}
 
 	//頂点バッファをアンロックする
@@ -226,7 +222,7 @@ void SetItem(D3DXVECTOR3 pos, ITEM_TYPE type)
 
 			switch (g_Item[nCntItem].type)
 			{
-			case ITEM_TYPE_0:
+			case ITEM_COIN:
 				//テクスチャ座標の設定
 				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 				pVtx[1].tex = D3DXVECTOR2(0.25f, 0.0f);
@@ -234,22 +230,13 @@ void SetItem(D3DXVECTOR3 pos, ITEM_TYPE type)
 				pVtx[3].tex = D3DXVECTOR2(0.25f, 1.0f);
 				break;
 
-			case ITEM_TYPE_1:
+			case ITEM_KEY:
 				//テクスチャ座標の設定
 				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 				pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 				pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 				pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 				break;
-
-			case ITEM_TYPE_3:
-				//テクスチャ座標の設定
-				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-				pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-				pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-				pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-				break;
-
 			}
 			break;
 		}
@@ -272,15 +259,13 @@ ITEM * GetItem(void)
 //----------------------------------------
 //　アイテムの当たり判定
 //----------------------------------------
-bool CollisionItem(D3DXVECTOR3 * pos, float fWidth, float fHeight, ITEM ** item)
+void CollisionItem(D3DXVECTOR3 * pos, float fWidth, float fHeight, ITEM ** item)
 {
 	ITEM * pItem;
-	int nCntItem;
 	pItem = GetItem();
-	bool bIsGetting = false;
 	*item = NULL;
 
-	for (nCntItem = 0; nCntItem < MAX_ITEM; nCntItem++)
+	for (int nCntItem = 0; nCntItem < MAX_ITEM; nCntItem++)
 	{
 		if (pItem->bUse == true)
 		{
@@ -299,19 +284,17 @@ bool CollisionItem(D3DXVECTOR3 * pos, float fWidth, float fHeight, ITEM ** item)
 		}
 		pItem++;
 	}
-
-	return bIsGetting;
 }
 
 //----------------------------------------
-//　アイテム
+//　アイテムの消去
 //----------------------------------------
 void DeleteItem(int nCntItem)
 {
 	//アイテムの非表示
 	g_Item[nCntItem].bUse = false;
 
-	if (g_Item[nCntItem].type ==ITEM_TYPE_0)
+	if (g_Item[nCntItem].type ==ITEM_COIN)
 	{
 		//サウンドの再生
 		PlaySound(SOUND_LABEL_SE_COIN);
@@ -320,7 +303,10 @@ void DeleteItem(int nCntItem)
 	}
 }
 
-int Coin(void)
+//----------------------------------------
+//　コインの枚数
+//----------------------------------------
+int GetNumCoin(void)
 {
 	return g_nCntCoin;
 }

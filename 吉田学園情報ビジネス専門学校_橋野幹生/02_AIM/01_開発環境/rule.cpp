@@ -1,17 +1,24 @@
+//----------------------------------------
+//	ルールの処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "rule.h"
 #include "input.h"
 #include "fade.h"
 #include "select.h"
 
-LPDIRECT3DTEXTURE9 g_pTextureRule[3] = {};				//テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureRule[2] = {};				//テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRule = NULL;			//頂点バッファへのポインタ
+bool g_bRule = false;
 
 //----------------------------------------
-//  タイトルの初期化設定処理
+//  ルールの初期化設定処理
 //----------------------------------------
 void InitRule(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
+
+	g_bRule = false;
 
 	//デバイスの取得
 	pDevice = GetDevice();
@@ -27,11 +34,6 @@ void InitRule(void)
 		"data\\TEXTURE\\Rule_1.png",
 		&g_pTextureRule[1]);
 
-	D3DXCreateTextureFromFile(
-		pDevice,
-		"data\\TEXTURE\\ball.png",
-		&g_pTextureRule[2]);
-
 	//頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * 3,
 		D3DUSAGE_WRITEONLY,
@@ -42,7 +44,7 @@ void InitRule(void)
 
 	VERTEX_2D * pVtx;		//頂点情報へのポインタ
 
-	for (int nCnt = 0; nCnt < 3; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		//頂点情報をロックし、頂点情報へのポインタを取得
 		g_pVtxBuffRule->Lock(0, 0, (void**)&pVtx, 0);
@@ -79,43 +81,45 @@ void InitRule(void)
 }
 
 //----------------------------------------
-//  タイトルの終了処理
+//  ルールの終了処理
 //----------------------------------------
 void UninitRule(void)
 {
-	for (int nCnt = 0; nCnt < 3; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		//テクスチャの破棄
 		if (g_pTextureRule[nCnt] != NULL)
-		{
+		{//テクスチャの破棄
 			g_pTextureRule[nCnt]->Release();
 			g_pTextureRule[nCnt] = NULL;
 		}
 	}
 
-	//頂点バッファの破棄
 	if (g_pVtxBuffRule != NULL)
-	{
+	{//頂点バッファの破棄
 		g_pVtxBuffRule->Release();
 		g_pVtxBuffRule = NULL;
 	}
 }
 
 //----------------------------------------
-//  タイトルの更新設定処理
+//  ルールの更新設定処理
 //----------------------------------------
 void UpdateRule(void)
 {
 	if (GetKeyboardPress(DIK_RETURN) == true)
 	{
-		//モード設定(セレクト画面に移行)
-		SetFade(MODE_GAME);
-	}
+		if (!g_bRule)
+		{
+			//モード設定(セレクト画面に移行)
+			SetFade(MODE_GAME);
 
+			g_bRule = true;
+		}
+	}
 }
 
 //----------------------------------------
-//  タイトルの描画処理
+//  ルールの描画処理
 //----------------------------------------
 void DrawRule(void)
 {
@@ -125,7 +129,7 @@ void DrawRule(void)
 	pDevice = GetDevice();
 
 	STAGE_No * pSelect;
-	pSelect = GetSelect();
+	pSelect = GetSelect();	//ステージの番号を取得
 
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, g_pVtxBuffRule, 0, sizeof(VERTEX_2D));

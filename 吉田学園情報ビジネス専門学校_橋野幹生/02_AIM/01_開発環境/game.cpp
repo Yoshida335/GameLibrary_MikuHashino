@@ -1,3 +1,7 @@
+//----------------------------------------
+//　ゲーム画面の処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "game.h"
 #include "input.h"
 #include "bg.h"
@@ -8,7 +12,6 @@
 #include "time.h"
 #include "score.h"
 #include "ladder.h"
-#include "button.h"
 #include "goal.h"
 #include "sound.h"
 #include "stage.h"
@@ -18,6 +21,9 @@
 //グローバル変数宣言
 bool g_bPause = false;		//ポーズ中かどうか
 
+//----------------------------------------
+//　ゲーム画面の初期化処理
+//----------------------------------------
 void InitGame(void)
 {
 	//背景の初期化設定
@@ -44,13 +50,10 @@ void InitGame(void)
 	//ブロックの初期化処理
 	InitBlock();
 
-	//ボタンの初期化処理
-	InitButton();
-
 	STAGE_No * pSelect;
 	pSelect = GetSelect();
 
-	Stage(*pSelect);
+	SelectStage(*pSelect);
 
 	//サウンドの再生
 	PlaySound(SOUND_LABEL_BGM_GAME);
@@ -58,6 +61,9 @@ void InitGame(void)
 	g_bPause = false;		//ポーズ解除
 }
 
+//----------------------------------------
+//　ゲーム画面の終了処理
+//----------------------------------------
 void UninitGame(void)
 {
 	//サウンドの停止
@@ -86,20 +92,20 @@ void UninitGame(void)
 
 	//ブロックの終了処理
 	UninitBlock();
-
-	//ボタンの終了処理
-	UninitButton();
 }
 
+//----------------------------------------
+//　ゲーム画面の更新処理
+//----------------------------------------
 void UpdateGame(void)
 {
-	STARTTIME * pST;
+	TIMESTATE * pST;
 	pST = GetStartTime();
 
 	if (GetKeyboardTrigger(DIK_RETURN) == true)
 	{
 		//モード設定(ゲーム画面に移行)
-		SetFade(MODE_RESULT);
+		SetFade(MODE_RESULT_OVER);
 	}
 	else
 	{
@@ -113,38 +119,39 @@ void UpdateGame(void)
 			//タイムの更新処理
 			UpdateTime();
 
+			//背景の更新処理
+			UpdateBG();
+
+			//スコアの更新設定
+			UpdateScore();
+
 			if (pST->state == TIME_ON)
 			{
-				//背景の更新処理
-				UpdateBG();
-
-				//スコアの更新設定
-				UpdateScore();
-
 				//プレイヤーの更新処理
 				UpdatePlayer();
-
-				//アイテムの更新処理
-				UpdateItem();
-
-				//ゴールの更新処理
-				UpdateGoal();
-
-				//梯子の更新処理
-				UpdateLadder();
-
-				//ブロックの更新処理
-				UpdateBlock();
-
-				//ボタンの更新処理
-				UpdateButton();
-
-				UpdateStage();
 			}
+
+			//アイテムの更新処理
+			UpdateItem();
+
+			//ゴールの更新処理
+			UpdateGoal();
+
+			//ブロックの更新処理
+			UpdateBlock();
+
+			//梯子の更新処理
+			UpdateLadder();
+
+			//ステージの更新処理
+			UpdateStage();
 		}
 	}
 }
 
+//----------------------------------------
+//　ゲーム画面の描画処理
+//----------------------------------------
 void DrawGame(void)
 {
 	//背景の描画処理
@@ -156,22 +163,15 @@ void DrawGame(void)
 	//ブロックの描画処理
 	DrawBlock();
 
-	//梯子の描画処理
-	DrawLadder();
-
 	//アイテムの描画処理
 	DrawItem();
 
-	//ボタンの描画処理
-	DrawButton();
+	//梯子の描画処理
+	DrawLadder();
 
 	//タイムの描画処理
 	DrawTime();
 
-	//スコアの描画設定
-	//DrawScore();
-
 	//プレイヤーの描画処理
 	DrawPlayer();
 }
-

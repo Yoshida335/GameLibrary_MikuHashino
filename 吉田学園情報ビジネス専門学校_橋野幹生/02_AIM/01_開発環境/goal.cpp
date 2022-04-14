@@ -1,3 +1,7 @@
+//----------------------------------------
+//　ゴールの処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "goal.h"
 #include "fade.h"
 #include "block.h"
@@ -5,10 +9,10 @@
 #include "time.h"
 
 //グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_pTextureGoal = {};
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGoal = NULL;
+LPDIRECT3DTEXTURE9 g_pTextureGoal = {};			//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGoal = NULL;	//頂点バッファへのポインタ
 Goal g_Goal[MAX_GOAL];
-int g_nCount = 0;
+bool g_bGoal = false;
 
 //----------------------------------------
 //　ゴールの初期化処理
@@ -16,8 +20,7 @@ int g_nCount = 0;
 void InitGoal(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;
-	int nCntGoal;
-	g_nCount = 0;
+	g_bGoal = false;
 
 	//デバイスの取得
 	pDevice = GetDevice();
@@ -29,13 +32,13 @@ void InitGoal(void)
 		&g_pTextureGoal);
 
 	//アイテムの初期化
-	for (nCntGoal = 0; nCntGoal < MAX_GOAL; nCntGoal++)
+	for (int nCntGoal = 0; nCntGoal < MAX_GOAL; nCntGoal++)
 	{
-		g_Goal[nCntGoal].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_Goal[nCntGoal].fWidth = GOAL_WIDTH;
-		g_Goal[nCntGoal].fHeight = GOAL_HEIGHT;
-		g_Goal[nCntGoal].state = GOAL_STATE_CLAUSE;
-		g_Goal[nCntGoal].bUse = false;
+		g_Goal[nCntGoal].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//位置
+		g_Goal[nCntGoal].fWidth = GOAL_WIDTH;			//幅
+		g_Goal[nCntGoal].fHeight = GOAL_HEIGHT;			//高さ
+		g_Goal[nCntGoal].state = GOAL_STATE_CLAUSE;		//状態
+		g_Goal[nCntGoal].bUse = false;		//使っているかどうか
 	}
 
 	//頂点バッファの設定
@@ -51,7 +54,7 @@ void InitGoal(void)
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffGoal->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (nCntGoal = 0; nCntGoal < MAX_GOAL; nCntGoal++)
+	for (int nCntGoal = 0; nCntGoal < MAX_GOAL; nCntGoal++)
 	{
 		//頂点座標更新
 		pVtx[0].pos = D3DXVECTOR3(g_Goal[nCntGoal].pos.x - (GOAL_WIDTH / 2), g_Goal[nCntGoal].pos.y - GOAL_HEIGHT, 0.0f);
@@ -233,7 +236,7 @@ void CollisionGoal(D3DXVECTOR3 * pos, D3DXVECTOR3 * posOld, float fWidth, float 
 						{
 							g_Goal[nCntGoal].state = GOAL_STATE_OPEN;
 							 
-							if (g_nCount == 0)
+							if (!g_bGoal)
 							{
 								//モード設定(ゲーム画面に移行)
 								SetFade(MODE_RESULT_CLEAR);
@@ -243,7 +246,7 @@ void CollisionGoal(D3DXVECTOR3 * pos, D3DXVECTOR3 * posOld, float fWidth, float 
 								//サウンドの再生
 								PlaySound(SOUND_LABEL_SE_DOOR);
 
-								g_nCount = 1;
+								g_bGoal = true;
 							}
 						}
 					}

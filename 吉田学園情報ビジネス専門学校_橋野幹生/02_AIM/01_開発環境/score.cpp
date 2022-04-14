@@ -1,9 +1,13 @@
+//----------------------------------------
+//	スコアの処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "score.h"
 #include "main.h"
 
 //グローバル変数宣言
 LPDIRECT3DTEXTURE9 g_pTextureScore = NULL;		//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffScore = NULL;
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffScore = NULL;	//頂点バッファへのポインタ
 D3DXVECTOR3 g_posScore[8];
 int g_nScore;
 
@@ -139,7 +143,7 @@ void DrawScore(void)
 //----------------------------------------
 void SetScore(int nScore)
 {
-	int aPosTexU[8];					//各桁の数字を格納
+	int aPosTexU[8];	//各桁の数字を格納
 
 	g_nScore = nScore;
 
@@ -177,7 +181,7 @@ void SetScore(int nScore)
 //----------------------------------------
 void AddScore(int nValue)
 {
-	int aPosTexU[8];					//各桁の数字を格納
+	int aPosTexU[8];	//各桁の数字を格納
 
 	g_nScore += nValue;
 

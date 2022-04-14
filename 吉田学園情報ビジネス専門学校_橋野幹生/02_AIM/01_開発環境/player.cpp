@@ -1,21 +1,20 @@
 //----------------------------------------
-//プレイヤー
+//	プレイヤーの処理
+//　Author：橋野幹生
 //----------------------------------------
 #include "player.h"
 #include "input.h"
 #include "block.h"
 #include "fade.h"
 #include "ladder.h"
-#include "button.h"
 #include "goal.h"
 #include "sound.h"
 
 //グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_pTexturePlayer = NULL;
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffPlayer = NULL;
+LPDIRECT3DTEXTURE9 g_pTexturePlayer = NULL;			//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffPlayer = NULL;	//頂点バッファへのポインタ
 Player g_Player;
 bool g_PlayerItem[PLAYER_ITEM_MAX];
-float g_nCntSpeedUp;		//スピードアップ用
 
 //----------------------------------------------
 //	プレイヤーの初期化処理
@@ -34,14 +33,10 @@ void InitPlayer(void)
 	g_Player.nPatternAnim = 0;			//パターン番号初期化
 	g_Player.nDirectionMove = 0;		//向き
 	g_Player.bIsJumping = false;		//ジャンプ中初期化
-	g_Player.bIsCatching = false;
-	g_Player.pItem = NULL;
-	g_Player.pBlock = NULL;
+	g_Player.pItem = NULL;		//アイテム
 
-	g_nCntSpeedUp = 0;
-
+	//アイテムを持っているかどうか
 	g_PlayerItem[PLAYER_ITEM_COIN] = false;
-	g_PlayerItem[PLAYER_ITEM_JUMPSHOSE] = false;
 	g_PlayerItem[PLAYER_ITEM_KEY] = false;
 
 	//テクスチャの読み込み
@@ -96,11 +91,16 @@ void InitPlayer(void)
 //----------------------------------------------
 void UninitPlayer(void)
 {
-	//頂点バッファの破棄
 	if (g_pVtxBuffPlayer != NULL)
-	{
+	{//頂点バッファの破棄
 		g_pVtxBuffPlayer->Release();
 		g_pVtxBuffPlayer = NULL;
+	}
+
+	if (g_pTexturePlayer != NULL)
+	{//テクスチャの破棄
+		g_pTexturePlayer->Release();
+		g_pTexturePlayer = NULL;
 	}
 }
 
@@ -109,7 +109,7 @@ void UninitPlayer(void)
 //----------------------------------------------
 void UpdatePlayer(void)
 {
-	VERTEX_2D * pVtx;		//頂点情報へのポインタ
+	VERTEX_2D * pVtx;	//頂点情報へのポインタ
 
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffPlayer->Lock(0, 0, (void**)&pVtx, 0);
@@ -127,13 +127,10 @@ void UpdatePlayer(void)
 	PlayerMove();
 
 	//ブロックとの当たり判定
-	CollisionBlock(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT, &g_Player.pBlock);
+	CollisionBlock_P(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT);
 
 	//アイテムとの当たり判定
 	CollisionItem(&g_Player.pos, PLAYER_WIDTH, PLAYER_HEIGHT, &g_Player.pItem);
-
-	//ボタン
-	CollisionButton(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT);
 
 	//梯子
 	CollisionLadder(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -142,12 +139,7 @@ void UpdatePlayer(void)
 	CollisionGoal(&g_Player.pos, &g_Player.posOld, PLAYER_WIDTH, PLAYER_HEIGHT, g_PlayerItem[PLAYER_ITEM_KEY]);
 
 	//ジャンプの可否
-	g_Player.bIsJumping = !CollisionBlock(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT, &g_Player.pBlock);
-	//g_Player.bIsJumping = CollisionLadder(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT);
-	if (g_Player.bIsJumping == true)
-	{
-		g_Player.bIsJumping = !CollisionButton(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT);
-	}
+	g_Player.bIsJumping = !CollisionBlock_P(&g_Player.pos, &g_Player.posOld, &g_Player.move, PLAYER_WIDTH, PLAYER_HEIGHT);
 
 	if (g_Player.pos.x - PLAYER_WIDTH / 2 >= SCREEN_WIDTH)
 	{//画面外(右側)に出たら
@@ -203,7 +195,7 @@ void DrawPlayer(void)
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
-//----------------------------------------------/**//**//**//**/
+//----------------------------------------------
 //	プレイヤーの移動処理
 //----------------------------------------------
 void PlayerMove(void)
@@ -216,34 +208,17 @@ void PlayerMove(void)
 	if (GetKeyboardPress(DIK_A) == true)
 	{//Aキーが押された
 	 //左方向に移動
-		if (g_PlayerItem[PLAYER_ITEM_SPEEDSHOSE] == true)
-		{
-			g_Player.move.x -= PLAYER_SPEED * ((g_nCntSpeedUp * 0.5) + 1.0f);
-		}
-		else
-		{
-			g_Player.move.x -= PLAYER_SPEED;
-		}
+		g_Player.move.x -= PLAYER_SPEED;
 
-		g_Player.nDirectionMove = 1;					//左向き
+		g_Player.nDirectionMove = 1;	//左向き
 	}
 	else if (GetKeyboardPress(DIK_D) == true)
 	{//Dキーが押された
 	 //右方向に移動
-		if (g_PlayerItem[PLAYER_ITEM_SPEEDSHOSE] == true)
-		{
-			g_Player.move.x += PLAYER_SPEED * ((g_nCntSpeedUp * 0.5) + 1.0f);
-		}
-		else
-		{
-			g_Player.move.x += PLAYER_SPEED;
-		}
+		g_Player.move.x += PLAYER_SPEED;
 
-		g_Player.nDirectionMove = 0;					//右向き
+		g_Player.nDirectionMove = 0;	//右向き
 	}
-
-	LADDER * pLadder;
-	pLadder = GetLadder();
 
 	//梯子での上下移動
 	if (GetKeyboardPress(DIK_W) == true)
@@ -264,18 +239,11 @@ void PlayerMove(void)
 	//ジャンプ
 	if (GetKeyboardTrigger(DIK_SPACE) == true && g_Player.bIsJumping == false)
 	{//スペースキーが押された
-		if(g_PlayerItem[PLAYER_ITEM_JUMPSHOSE] == false)
-		{
-			g_Player.move.y -= PLAYER_JUMP;
-		}
-		else if (g_PlayerItem[PLAYER_ITEM_JUMPSHOSE] == true)
-		{
-				g_Player.move.y -= PLAYER_JUMP * 1.2f;
-		}
+		g_Player.move.y -= PLAYER_JUMP;
 
 		//サウンドの再生
 		PlaySound(SOUND_LABEL_SE_JUMP);
-		
+
 		g_Player.bIsJumping = true;
 
 		if (g_Player.nPatternAnim == 0)
@@ -311,42 +279,6 @@ void PlayerMove(void)
 		}
 	}
 
-	if (g_Player.pBlock != NULL)
-	{
-		if (g_Player.pBlock->state == BLOCKSTATE_ACT)
-		{
-			if (GetKeyboardPress(DIK_F) == true)
-			{//Fキーが押された
-				g_Player.pBlock->move.x = g_Player.move.x;
-			}
-			else
-			{
-				g_Player.pBlock->move.x = 0.0f;
-			}
-		}
-
-		if (g_Player.pBlock->state == BLOCKSTATE_RL)
-		{
-			if (GetKeyboardTrigger(DIK_F) == true)
-			{//Fキーが押された
-				if (g_Player.pos.y - PLAYER_HEIGHT <= g_Player.pBlock->pos.y + (g_Player.pBlock->fHeight / 2)
-					&& g_Player.posOld.y >= g_Player.pBlock->pos.y - (g_Player.pBlock->fHeight / 2))
-				{
-					if (g_Player.pos.x - (PLAYER_WIDTH / 2) <= g_Player.pBlock->pos.x + (g_Player.pBlock->fWidth / 2)
-						&& g_Player.posOld.x - (PLAYER_WIDTH / 2) >= g_Player.pBlock->pos.x + (g_Player.pBlock->fWidth / 2))
-					{
-						g_Player.pBlock->move.x = -5.0f;
-					}
-					else if (g_Player.pos.x + (PLAYER_WIDTH / 2) >= g_Player.pBlock->pos.x - (g_Player.pBlock->fWidth / 2)
-						&& g_Player.posOld.x + (PLAYER_WIDTH / 2) <= g_Player.pBlock->pos.x - (g_Player.pBlock->fWidth / 2))
-					{
-						g_Player.pBlock->move.x = 5.0f;
-					}
-				}
-			}
-		}
-	}
-
 	if (g_Player.nPatternAnim >= 4)
 	{
 		g_Player.nPatternAnim = 0;		//パターン番号を０に戻す
@@ -360,27 +292,21 @@ void PlayerMove(void)
 	g_Player.move.x += (0.0f - g_Player.move.x) * 0.2f;
 }
 
+//----------------------------------------------
+//	プレイヤーのアイテム処理
+//----------------------------------------------
 void PlayerItem(void)
 {
 	if (g_Player.pItem != NULL)
 	{
 		switch (g_Player.pItem->type)
 		{
-		case ITEM_TYPE_0:
+		case ITEM_COIN:
 			g_PlayerItem[PLAYER_ITEM_COIN] = true;
 			break;
 
-		case ITEM_TYPE_1:
-			g_PlayerItem[PLAYER_ITEM_JUMPSHOSE] = true;
-			break;
-
-		case ITEM_TYPE_3:
+		case ITEM_KEY:
 			g_PlayerItem[PLAYER_ITEM_KEY] = true;
-			break;
-
-		case ITEM_TYPE_4:
-			g_PlayerItem[PLAYER_ITEM_SPEEDSHOSE] = true;
-			g_nCntSpeedUp++;
 			break;
 		}
 	}

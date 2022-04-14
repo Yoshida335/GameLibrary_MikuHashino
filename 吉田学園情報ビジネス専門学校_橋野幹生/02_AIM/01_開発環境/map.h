@@ -1,13 +1,19 @@
 //----------------------------------------
-//ã€€ãƒãƒƒãƒ—ã®ãƒ˜ãƒƒãƒ€ãƒ¼
-//ã€€Authorï¼šæ©‹é‡å¹¹ç”Ÿ
+//	ƒ}ƒbƒv‚Ìƒwƒbƒ_[
+//	AuthorF‹´–ìŠ²¶
 //----------------------------------------
 #ifndef _MAP_H_
 #define _MAP_H_
 
 #include "main.h"
 
-void SetMap(void);	//ãƒãƒƒãƒ—ã®è¨­å®š
+//ƒ}ƒbƒv‚Ìí—Ş
+typedef enum
+{
+	MAP_01 = 0,	//ƒ}ƒbƒv1
+	MAP_02		//ƒ}ƒbƒv2
+}STAGE_NUMBER;
+
+void SetMap(int nSelect);	//ƒ}ƒbƒv‚Ìİ’è
 
 #endif
-

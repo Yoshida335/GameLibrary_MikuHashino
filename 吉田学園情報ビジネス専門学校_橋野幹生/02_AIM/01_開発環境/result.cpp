@@ -1,13 +1,26 @@
+//----------------------------------------
+//	リザルト画面の処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "result.h"
 #include "input.h"
 #include "fade.h"
 #include "sound.h"
 
-LPDIRECT3DTEXTURE9 g_pTextureResult = {};			//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResult = NULL;		//頂点バッファへのポインタ
+//グローバル変数宣言
+LPDIRECT3DTEXTURE9 g_pTextureResult[RESULT_TYPE_MAX] = {};		//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResult = NULL;	//頂点バッファへのポインタ
+Result_Type g_ResultType = RESULT_TYPE_OVER;		//リザルトの種類
+bool g_bResult = false;		//一回だけ起動用
 
-void InitResult(void)
+//----------------------------------------
+//  リザルトの初期化処理
+//----------------------------------------
+void InitResult(Result_Type nResult)
 {
+	g_ResultType = nResult;	//種類を設定
+	g_bResult = false;		//falseにする
+
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
 
 	//デバイスの取得
@@ -16,8 +29,13 @@ void InitResult(void)
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
+		"data\\TEXTURE\\result_clear.png",
+		&g_pTextureResult[RESULT_TYPE_OVER]);
+
+	D3DXCreateTextureFromFile(
+		pDevice,
 		"data\\TEXTURE\\result_over.png",
-		&g_pTextureResult);
+		&g_pTextureResult[RESULT_TYPE_CLEAR]);
 
 	//頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -63,13 +81,19 @@ void InitResult(void)
 	PlaySound(SOUND_LABEL_BGM_RESULT);
 }
 
+//----------------------------------------
+//  リザルトの終了処理
+//----------------------------------------
 void UninitResult(void)
 {
 	//テクスチャの破棄
-	if (g_pTextureResult != NULL)
+	for (int i = 0; i < RESULT_TYPE_MAX; i++)
 	{
-		g_pTextureResult->Release();
-		g_pTextureResult = NULL;
+		if (g_pTextureResult[i] != NULL)
+		{
+			g_pTextureResult[i]->Release();
+			g_pTextureResult[i] = NULL;
+		}
 	}
 
 	//頂点バッファの破棄
@@ -80,15 +104,26 @@ void UninitResult(void)
 	}
 }
 
+//----------------------------------------
+//  リザルトの更新処理
+//----------------------------------------
 void UpdateResult(void)
 {
 	if (GetKeyboardTrigger(DIK_RETURN) == true)
 	{
-		//モード設定(ゲーム画面に移行)
-		SetFade(MODE_RANKING);
+		if (!g_bResult)
+		{
+			//モード設定(ゲーム画面に移行)
+			SetFade(MODE_RANKING);
+
+			g_bResult = true;
+		}
 	}
 }
 
+//----------------------------------------
+//  リザルトの描画処理
+//----------------------------------------
 void DrawResult(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
@@ -103,9 +138,8 @@ void DrawResult(void)
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	//テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureResult);
+	pDevice->SetTexture(0, g_pTextureResult[g_ResultType]);
 
 	//ポリゴンの設定
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
-

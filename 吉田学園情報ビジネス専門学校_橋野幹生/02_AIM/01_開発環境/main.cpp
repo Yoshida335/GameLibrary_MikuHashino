@@ -9,7 +9,6 @@
 #include "title.h"
 #include "game.h"
 #include "result.h"
-#include "result_clear.h"
 #include "ranking.h"
 #include "fade.h"
 #include "select.h"
@@ -28,9 +27,9 @@ void Updata(void);
 void Draw(void);
 
 //グローバル変数宣言
-LPDIRECT3D9 g_pD3D = NULL;						//Direct3Dオブジェクトへのポインタ
-LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;			//Direct3Dデバイスへのポインタ
-MODE g_mode = MODE_TITLE;
+LPDIRECT3D9 g_pD3D = NULL;					//Direct3Dオブジェクトへのポインタ
+LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;		//Direct3Dデバイスへのポインタ
+MODE g_mode = MODE_TITLE;		//現在のモード
 
 //----------------------------------------
 //　メイン関数
@@ -39,32 +38,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 {
 	WNDCLASSEX wcex =
 	{
-		sizeof(WNDCLASSEX),							//WNDCLASSEXのメモリサイズ
-		CS_CLASSDC,									//ウィンドウのスタイル
-		WindowProc,									//ウィンドウプロシージャ
-		0,											//0にする（通常は使用しない）
+		sizeof(WNDCLASSEX),					//WNDCLASSEXのメモリサイズ
+		CS_CLASSDC,							//ウィンドウのスタイル
+		WindowProc,							//ウィンドウプロシージャ
+		0,									//0にする（通常は使用しない）
 		0,
-		hInstance,									//インスタンスハンドル
-		LoadIcon(NULL, IDI_APPLICATION),			//タスクバーのアイコン
-		LoadCursor(NULL, IDC_ARROW),				//マウスカーソル
-		(HBRUSH)(COLOR_WINDOW + 1),					//クライアント領域の背景色
-		NULL,										//メニューバー
-		CLASS_NAME,									//ウィンドウクラスの名前
-		LoadIcon(NULL, IDI_APPLICATION)				//ファイルのアイコン
+		hInstance,							//インスタンスハンドル
+		LoadIcon(NULL, IDI_APPLICATION),	//タスクバーのアイコン
+		LoadCursor(NULL, IDC_ARROW),		//マウスカーソル
+		(HBRUSH)(COLOR_WINDOW + 1),			//クライアント領域の背景色
+		NULL,								//メニューバー
+		CLASS_NAME,							//ウィンドウクラスの名前
+		LoadIcon(NULL, IDI_APPLICATION)		//ファイルのアイコン
 	};
 
 	HWND hWnd;		//ウィンドウハンドル(識別子)
 	MSG msg;		//メッセージを格納する変数
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };	//画面サイズの構造体
 
-														//ウィンドウクラスの登録
+	//ウィンドウクラスの登録
 	RegisterClassEx(&wcex);
 
 	//クライアント領域を指定のサイズに調整
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
 	//ウィンドウを生成
-	hWnd = CreateWindowEx(0,							//拡張ウィンドウスタイル
+	hWnd = CreateWindowEx(0,		//拡張ウィンドウスタイル
 		CLASS_NAME,					//ウィンドウクラスの名前
 		WINDOW_NAME,				//ウィンドウの名前
 		WS_OVERLAPPEDWINDOW,		//ウィンドウスタイル
@@ -77,11 +76,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		hInstance,					//インスタンスハンドル
 		NULL);						//ウィンドウ作成データ
 
-	DWORD dwCurrentTime;				//現在時刻
-	DWORD dwExecLastTime;				//最後に処理した時刻
+	DWORD dwCurrentTime;			//現在時刻
+	DWORD dwExecLastTime;			//最後に処理した時刻
 
 	//初期化設定
-	if (FAILED(Init(hInstance, hWnd, FALSE)))
+	if (FAILED(Init(hInstance, hWnd, TRUE)))
 	{//初期化が失敗した場合
 		return -1;
 	}
@@ -307,9 +306,6 @@ void Uninit(void)
 	//リザルト画面の終了処理
 	UninitResult();
 
-	//リザルト_クリア画面の終了処理
-	UninitResultClear();
-
 	//ランキング画面の終了処理
 	UninitRanking();
 
@@ -347,31 +343,31 @@ void Updata(void)
 
 	switch (g_mode)
 	{
-	case MODE_TITLE:
+	case MODE_TITLE:	//タイトル画面
 		UpdateTitle();
 		break;
 
-	case MODE_SELECT:
+	case MODE_SELECT:	//ステージセレクト画面
 		UpdateSelect();
 		break;
 
-	case MODE_RULE:
+	case MODE_RULE:		//ルール画面
 		UpdateRule();
 		break;
 
-	case MODE_GAME:
+	case MODE_GAME:		//ゲーム画面
 		UpdateGame();
 		break;
 
-	case MODE_RESULT:
+	case MODE_RESULT_OVER:	//リザルト画面(ゲームオーバー)
 		UpdateResult();
 		break;
 
-	case MODE_RESULT_CLEAR:
-		UpdateResultClear();
+	case MODE_RESULT_CLEAR:	//リザルト画面(ゲームクリア)
+		UpdateResult();
 		break;
 
-	case MODE_RANKING:
+	case MODE_RANKING:	//ランキング画面
 		UpdateRanking();
 		break;
 	}
@@ -396,31 +392,31 @@ void Draw(void)
 	{//描画開始が成功した場合
 		switch (g_mode)
 		{
-		case MODE_TITLE:
-			DrawTitle();
-			break;
-
-		case MODE_SELECT:
-			DrawSelect();
-			break;
-
-		case MODE_RULE:
-			DrawRule();
-			break;
-
-		case MODE_GAME:
+		case MODE_TITLE:	//タイトル画面
+			DrawTitle();	
+			break;			
+							
+		case MODE_SELECT:	//ステージセレクト画面
+			DrawSelect();	
+			break;			
+							
+		case MODE_RULE:		//ルール画面
+			DrawRule();		
+			break;			
+							
+		case MODE_GAME:		//ゲーム画面
 			DrawGame();
 			break;
 
-		case MODE_RESULT:
+		case MODE_RESULT_OVER:	//リザルト画面(ゲームオーバー)
 			DrawResult();
 			break;
 
-		case MODE_RESULT_CLEAR:
-			DrawResultClear();
+		case MODE_RESULT_CLEAR:	//リザルト画面(ゲームクリア)
+			DrawResult();
 			break;
 
-		case MODE_RANKING:
+		case MODE_RANKING:	//ランキング画面
 			DrawRanking();
 			break;
 		}
@@ -436,41 +432,47 @@ void Draw(void)
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
+//----------------------------------------
+//  デバイス情報
+//----------------------------------------
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	return g_pD3DDevice;
 }
 
+//----------------------------------------
+//  モード設定
+//----------------------------------------
 void SetMode(MODE mode)
 {
 	//現在の画面(モード)の終了処理
 	switch (g_mode)
 	{
-	case MODE_TITLE:
+	case MODE_TITLE:	//タイトル画面
 		UninitTitle();
 		break;
 
-	case MODE_SELECT:
+	case MODE_SELECT:	//ステージセレクト画面
 		UninitSelect();
 		break;
 
-	case MODE_RULE:
+	case MODE_RULE:		//ルール画面
 		UninitRule();
 		break;
 
-	case MODE_GAME:
+	case MODE_GAME:		//ゲーム画面
 		UninitGame();
 		break;
 
-	case MODE_RESULT:
+	case MODE_RESULT_OVER:	//リザルト画面(ゲームオーバー)
 		UninitResult();
 		break;
 
-	case MODE_RESULT_CLEAR:
-		UninitResultClear();
+	case MODE_RESULT_CLEAR:	//リザルト画面(ゲームクリア)
+		UninitResult();
 		break;
 
-	case MODE_RANKING:
+	case MODE_RANKING:	//ランキング画面
 		UninitRanking();
 		break;
 	}
@@ -478,31 +480,31 @@ void SetMode(MODE mode)
 	//新しい画面(モード)の初期化処理
 	switch (mode)
 	{
-	case MODE_TITLE:
+	case MODE_TITLE:	//タイトル画面
 		InitTitle();
 		break;
 
-	case MODE_SELECT:
+	case MODE_SELECT:	//ステージセレクト画面
 		InitSelect();
 		break;
 
-	case MODE_RULE:
+	case MODE_RULE:		//ルール画面
 		InitRule();
 		break;
 
-	case MODE_GAME:
+	case MODE_GAME:		//ゲーム画面
 		InitGame();
 		break;
 
-	case MODE_RESULT:
-		InitResult();
+	case MODE_RESULT_OVER:				//リザルト画面(ゲームオーバー)
+		InitResult(RESULT_TYPE_OVER);
 		break;
 
-	case MODE_RESULT_CLEAR:
-		InitResultClear();
+	case MODE_RESULT_CLEAR:				//リザルト画面(ゲームクリア)
+		InitResult(RESULT_TYPE_CLEAR);
 		break;
 
-	case MODE_RANKING:
+	case MODE_RANKING:	//ランキング画面
 		InitRanking();
 		break;
 	}
@@ -510,6 +512,9 @@ void SetMode(MODE mode)
 	g_mode = mode;
 }
 
+//----------------------------------------
+//  モード情報
+//----------------------------------------
 MODE GetMode(void)
 {
 	return g_mode;

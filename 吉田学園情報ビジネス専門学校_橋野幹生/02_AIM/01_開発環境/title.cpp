@@ -1,11 +1,16 @@
+//----------------------------------------
+//	タイトル画面の処理
+//	Author：橋野幹生
+//----------------------------------------
 #include "title.h"
 #include "input.h"
 #include "fade.h"
 #include "sound.h"
 
-LPDIRECT3DTEXTURE9 g_pTextureTitle[2] = {};				//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTitle[2] = {};		//頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureTitle[2] = {};			//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTitle[2] = {};	//頂点バッファへのポインタ
 D3DXVECTOR3 g_posText;
+bool bTitle;	//一回だけ起動用
 
 //----------------------------------------
 //  タイトルの初期化設定処理
@@ -30,6 +35,7 @@ void InitTitle(void)
 
 	//位置初期化(PRESS ENTER)
 	g_posText = D3DXVECTOR3((SCREEN_WIDTH / 2), 500.0f, 0.0f);
+	bTitle = false;
 
 	//頂点バッファの生成
 	for (int nCnt = 0; nCnt < 2; nCnt++)
@@ -44,7 +50,7 @@ void InitTitle(void)
 
 	VERTEX_2D * pVtx;		//頂点情報へのポインタ
 
-	//背景の頂点
+	//背景の頂点バッファ
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffTitle[0]->Lock(0, 0, (void**)&pVtx, 0);
 
@@ -75,7 +81,7 @@ void InitTitle(void)
 	//頂点バッファをアンロックする
 	g_pVtxBuffTitle[0]->Unlock();
 
-	//テキストの頂点
+	//テキストの頂点バッファ
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffTitle[1]->Lock(0, 0, (void**)&pVtx, 0);
 
@@ -115,26 +121,19 @@ void InitTitle(void)
 //----------------------------------------
 void UninitTitle(void)
 {
-	//サウンドの停止
-	//StopSound();
-
-	int nCnt;
-
-	for (nCnt = 0; nCnt < 2; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		//テクスチャの破棄
 		if (g_pTextureTitle[nCnt] != NULL)
-		{
+		{//テクスチャの破棄
 			g_pTextureTitle[nCnt]->Release();
 			g_pTextureTitle[nCnt] = NULL;
 		}
 	}
 
-	for (nCnt = 0; nCnt < 2; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		//頂点バッファの破棄
 		if (g_pVtxBuffTitle[nCnt] != NULL)
-		{
+		{//頂点バッファの破棄
 			g_pVtxBuffTitle[nCnt]->Release();
 			g_pVtxBuffTitle[nCnt] = NULL;
 		}
@@ -154,16 +153,20 @@ void UpdateTitle(void)
 
 	if (GetKeyboardPress(DIK_RETURN) == true)
 	{
-		//サウンドの再生
-		PlaySound(SOUND_LABEL_SE_TITLE_BUTTON);
+		if (!bTitle)
+		{//一回だけ起動
+			//サウンドの再生
+			PlaySound(SOUND_LABEL_SE_TITLE_BUTTON);
 
-		//モード設定(セレクト画面に移行)
-		SetFade(MODE_SELECT);
+			//モード設定(セレクト画面に移行)
+			SetFade(MODE_SELECT);
+
+			bTitle = true;
+		}
 	}
 
 	//頂点バッファをアンロックする
 	g_pVtxBuffTitle[1]->Unlock();
-
 }
 
 //----------------------------------------
@@ -171,13 +174,12 @@ void UpdateTitle(void)
 //----------------------------------------
 void DrawTitle(void)
 {
-	int nCnt;
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
 
 	//デバイスの取得
 	pDevice = GetDevice();
 
-	for (nCnt = 0; nCnt < 2; nCnt++)
+	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		//頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, g_pVtxBuffTitle[nCnt], 0, sizeof(VERTEX_2D));

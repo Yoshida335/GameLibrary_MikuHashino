@@ -5,16 +5,11 @@
 #define _MAIN_H_				//２重インクルード防止のマクロ定義	
 
 #include <windows.h>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
 #include "d3dx9.h"
 #define DIRECTINPUT_VERSION (0x0800)	//ビルド時の警告対処用マクロ
 #include "dinput.h"						//入力処理に必要
 #include "xinput.h"						//ジョイパッド処理に必要
 #include "xaudio2.h"					//サウンド処理に必要
-#include "dinput.h"
-#include "xaudio2.h"
 
 //ライブラリのリンク
 #pragma comment(lib, "d3d9.lib")		//描画処理に必要
@@ -46,7 +41,7 @@ typedef enum
 	MODE_SELECT,			//セレクト画面
 	MODE_RULE,				//ルール画面
 	MODE_GAME,				//ゲーム画面
-	MODE_RESULT,			//リザルト画面
+	MODE_RESULT_OVER,			//リザルト画面
 	MODE_RESULT_CLEAR,		//リザルトクリア画面
 	MODE_RANKING,			//ランキング画面
 	//ステージ

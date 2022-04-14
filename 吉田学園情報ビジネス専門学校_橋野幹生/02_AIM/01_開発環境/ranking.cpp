@@ -1,3 +1,7 @@
+//----------------------------------------
+//	ランキングの処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "ranking.h"
 #include "input.h"
 #include "fade.h"
@@ -8,19 +12,17 @@
 #include "sound.h"
 
 //グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_pTextureRankScore = NULL;			//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRankScore = NULL;		//頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureRankScore = NULL;		//数字のテクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRankScore = NULL;	//数字の頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureRank_Bg = NULL;		//背景のテクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRank_Bg = NULL;	//背景の頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureRank = NULL;			//順位のテクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRank = NULL;		//順位の頂点バッファへのポインタ
 int g_aRankScore[MAX_RANK + 1];				//ランキングスコア情報[最大ランキング数 + 獲得したSCORE入れる分]
 D3DXVECTOR3 g_aRankpos[MAX_RANK][8];		//ランキング位置情報
 int g_nCntY;								//最大ランキング数分回す用
-
-LPDIRECT3DTEXTURE9 g_pTextureRanking = NULL;			//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRanking = NULL;		//頂点バッファへのポインタ
-
-
-LPDIRECT3DTEXTURE9 g_pTextureRank = NULL;			//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffRank = NULL;		//頂点バッファへのポインタ
 D3DXVECTOR3 rankpos[MAX_RANK];
+bool bRanking = false;
 
 //----------------------------------------
 //  ランキングの初期化設定処理
@@ -28,7 +30,8 @@ D3DXVECTOR3 rankpos[MAX_RANK];
 void InitRanking(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
-	int nCntRank;
+
+	bRanking = false;	// falseにする
 
 	//デバイスの取得
 	pDevice = GetDevice();
@@ -36,24 +39,24 @@ void InitRanking(void)
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
-		"data\\TEXTURE\\number.png",
+		"data\\TEXTURE\\number.png",	//数字
 		&g_pTextureRankScore);
 
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
-		"data\\TEXTURE\\ranking.png",
-		&g_pTextureRanking);
+		"data\\TEXTURE\\ranking.png",	//背景
+		&g_pTextureRank_Bg);
 
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
 		pDevice,
-		"data\\TEXTURE\\rank_number2.png",
+		"data\\TEXTURE\\rank_number.png",	//順位
 		&g_pTextureRank);
 
 	for (g_nCntY = 0; g_nCntY < MAX_RANK; g_nCntY++)
 	{
-		for (nCntRank = 0; nCntRank < 8; nCntRank++)
+		for (int nCntRank = 0; nCntRank < 8; nCntRank++)
 		{
 			g_aRankpos[g_nCntY][nCntRank] = D3DXVECTOR3(430.0f + (70.0f * nCntRank), 180.0f + (120.0f * g_nCntY), 0.0f);		//位置の初期
 		}
@@ -70,7 +73,7 @@ void InitRanking(void)
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
-		&g_pVtxBuffRanking,
+		&g_pVtxBuffRank_Bg,
 		NULL);
 
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_RANK,
@@ -87,7 +90,7 @@ void InitRanking(void)
 
 	for (g_nCntY = 0; g_nCntY < MAX_RANK; g_nCntY++)
 	{
-		for (nCntRank = 0; nCntRank < 8; nCntRank++)
+		for (int nCntRank = 0; nCntRank < 8; nCntRank++)
 		{
 			//頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(g_aRankpos[g_nCntY][nCntRank].x - 40.0f, g_aRankpos[g_nCntY][nCntRank].y - 50.0f, 0.0f);
@@ -122,7 +125,7 @@ void InitRanking(void)
 
 	{
 	//頂点情報をロックし、頂点情報へのポインタを取得
-	g_pVtxBuffRanking->Lock(0, 0, (void**)&pVtx, 0);
+	g_pVtxBuffRank_Bg->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
 	pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -149,7 +152,7 @@ void InitRanking(void)
 	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
 	//頂点バッファをアンロックする
-	g_pVtxBuffRanking->Unlock();
+	g_pVtxBuffRank_Bg->Unlock();
 	}
 
 	for (int i = 0; i < MAX_RANK; i++)
@@ -194,8 +197,6 @@ void InitRanking(void)
 		g_pVtxBuffRank->Unlock();
 	}
 
-
-
 	SetRanking();
 }
 
@@ -208,37 +209,37 @@ void UninitRanking(void)
 	StopSound();
 
 	if (g_pTextureRankScore != NULL)
-	{
+	{//テクスチャの破棄
 		g_pTextureRankScore->Release();
 		g_pTextureRankScore = NULL;
 	}
 
 	if (g_pVtxBuffRankScore != NULL)
-	{
+	{//頂点バッファの破棄
 		g_pVtxBuffRankScore->Release();
 		g_pVtxBuffRankScore = NULL;
 	}
 
-	if (g_pTextureRanking != NULL)
-	{
-		g_pTextureRanking->Release();
-		g_pTextureRanking = NULL;
+	if (g_pTextureRank_Bg != NULL)
+	{//テクスチャの破棄
+		g_pTextureRank_Bg->Release();
+		g_pTextureRank_Bg = NULL;
 	}
 
-	if (g_pVtxBuffRanking != NULL)
-	{
-		g_pVtxBuffRanking->Release();
-		g_pVtxBuffRanking = NULL;
+	if (g_pVtxBuffRank_Bg != NULL)
+	{//頂点バッファの破棄
+		g_pVtxBuffRank_Bg->Release();
+		g_pVtxBuffRank_Bg = NULL;
 	}
 
 	if (g_pTextureRank != NULL)
-	{
+	{//テクスチャの破棄
 		g_pTextureRank->Release();
 		g_pTextureRank = NULL;
 	}
 
 	if (g_pVtxBuffRank != NULL)
-	{
+	{//頂点バッファの破棄
 		g_pVtxBuffRank->Release();
 		g_pVtxBuffRank = NULL;
 	}
@@ -251,8 +252,13 @@ void UpdateRanking(void)
 {
 	if (GetKeyboardTrigger(DIK_RETURN) == true)
 	{
-		//モード設定(ゲーム画面に移行)
-		SetFade(MODE_TITLE);
+		if (!bRanking)
+		{
+			//モード設定(ゲーム画面に移行)
+			SetFade(MODE_TITLE);
+
+			bRanking = true;
+		}
 	}
 }
 
@@ -266,15 +272,14 @@ void DrawRanking(void)
 	//デバイスの取得
 	pDevice = GetDevice();
 
-
 	//頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffRanking, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, g_pVtxBuffRank_Bg, 0, sizeof(VERTEX_2D));
 
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	//テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureRanking);
+	pDevice->SetTexture(0, g_pTextureRank_Bg);
 
 	//ポリゴンの設定
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
@@ -363,7 +368,6 @@ void SetRanking(void)
 	//敵の情報の取得
 	g_aRankScore[5] = *nMyTime * 1000;
 
-	int aData[5];
 	int nData;
 	int nCount[2];
 

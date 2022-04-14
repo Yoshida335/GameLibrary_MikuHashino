@@ -1,24 +1,28 @@
+//----------------------------------------
+//	セレクトの処理
+//　Author：橋野幹生
+//----------------------------------------
 #include "select.h"
 #include "input.h"
 #include "sound.h"
 #include "fade.h"
 
 //グローバル変数宣言
-LPDIRECT3DTEXTURE9 g_pTextureSelect[MAX_SELECT] = {};			//テクスチャ(2枚分)へのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffSelect = NULL;				//頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureSelect[MAX_SELECT] = {};	//テクスチャ(2枚分)へのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffSelect = NULL;		//頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureBGG = {};			//テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBGG = {};		//頂点バッファへのポインタ
 SELECT g_Select[MAX_SELECT];
 STAGE_No g_nSelect;
-LPDIRECT3DTEXTURE9 g_pTextureBGG = {};			//テクスチャ(2枚分)へのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBGG = {};		//頂点バッファへのポインタ
+bool g_bSelect = false;
 
 //----------------------------------------
 //  セレクトの初期化設定処理
 //----------------------------------------
 void InitSelect(void)
 {
-	int nCntSelect = 0;		//for文用
-
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
+	g_bSelect = false;
 
 	//デバイスの取得
 	pDevice = GetDevice();
@@ -40,7 +44,7 @@ void InitSelect(void)
 		&g_pTextureBGG);
 
 	//初期化
-	for (nCntSelect = 0; nCntSelect < MAX_SELECT; nCntSelect++)
+	for (int nCntSelect = 0; nCntSelect < MAX_SELECT; nCntSelect++)
 	{
 		g_Select[nCntSelect].pos = D3DXVECTOR3((SCREEN_WIDTH / 2), 150.0f + (200.0f * nCntSelect), 0.0f);
 		g_Select[nCntSelect].state = SELECT_OFF;
@@ -68,7 +72,7 @@ void InitSelect(void)
 	//頂点情報をロックし、頂点情報へのポインタを取得
 	g_pVtxBuffSelect->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (nCntSelect = 0; nCntSelect < MAX_SELECT; nCntSelect++)
+	for (int nCntSelect = 0; nCntSelect < MAX_SELECT; nCntSelect++)
 	{
 		//頂点座標設定
 		pVtx[0].pos = D3DXVECTOR3(g_Select[nCntSelect].pos.x - (SELECT_WIDTH / 2), g_Select[nCntSelect].pos.y - (SELECT_HEIGHT / 2), 0.0f);
@@ -176,8 +180,13 @@ void UpdateSelect(void)
 
 	if (GetKeyboardTrigger(DIK_RETURN) == true)
 	{//RETURNキーが押された
-	 //モード設定(ゲーム画面に移行)
-		SetFade(MODE_RULE);
+		if (!g_bSelect)
+		{
+			//モード設定(ゲーム画面に移行)
+			SetFade(MODE_RULE);
+
+			g_bSelect = true;
+		}
 	}
 
 	if (GetKeyboardTrigger(DIK_W) == true)
@@ -306,8 +315,10 @@ void DrawSelect(void)
 
 }
 
+//----------------------------------------
+//  ステージ番号の情報
+//----------------------------------------
 STAGE_No * GetSelect(void)
 {
 	return &g_nSelect;
 }
-
