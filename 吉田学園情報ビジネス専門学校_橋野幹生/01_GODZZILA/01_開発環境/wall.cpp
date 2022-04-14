@@ -7,8 +7,8 @@
 
 //グローバル変数宣言
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffWall = NULL;		//頂点バッファへのポインタ
-LPDIRECT3DTEXTURE9 g_pTextureWall[2] = {};
-Wall g_aWall[MAX_WALL];
+LPDIRECT3DTEXTURE9 g_pTextureWall[2] = {};			//テクスチャへポインタ
+Wall g_aWall[MAX_WALL];		//壁の構造体
 
 //---------------------------------------------------
 //	壁の初期化
@@ -31,12 +31,12 @@ void InitWall(void)
 
 	//壁の各値初期化
 	for (int nCntWall = 0; nCntWall < MAX_WALL; nCntWall++)
-	{
-		g_aWall[nCntWall].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aWall[nCntWall].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aWall[nCntWall].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-		g_aWall[nCntWall].bUse = false;
-		g_aWall[nCntWall].type = TYPE_WARKING;
+	{//壁の最大数分回す
+		g_aWall[nCntWall].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//位置
+		g_aWall[nCntWall].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//角度
+		g_aWall[nCntWall].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);	//カラー
+		g_aWall[nCntWall].bUse = false;				//使っているかどうか
+		g_aWall[nCntWall].type = TYPE_WARKING;		//壁のテクスチャの種類
 	}
 
 	//頂点バッファの生成
@@ -53,7 +53,7 @@ void InitWall(void)
 	g_pVtxBuffWall->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntWall = 0; nCntWall < MAX_WALL; nCntWall++)
-	{
+	{//壁の最大数分回す
 		//頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(-WALL_X, WALL_Y, 0.0f);
 		pVtx[1].pos = D3DXVECTOR3(WALL_X, WALL_Y, 0.0f);
@@ -78,35 +78,27 @@ void InitWall(void)
 		pVtx[2].tex = D3DXVECTOR2(0.0f * 2, 1.0f);
 		pVtx[3].tex = D3DXVECTOR2(1.0f * 2, 1.0f);
 
-		pVtx += 4;
+		pVtx += 4;		//頂点データのポインタを4つ分進める
 	}
 
 	//頂点バッファのアンロック
 	g_pVtxBuffWall->Unlock();
 
-
+	//壁の設定
 	SetWall(D3DXVECTOR3(-(MESHFIELD_SIZE / 2.0f), 0.0f, 0.0f), D3DXVECTOR3(0.0f, (-D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) , D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
 	SetWall(D3DXVECTOR3(-(MESHFIELD_SIZE / 2.0f), 0.0f, 0.0f), D3DXVECTOR3(0.0f, (D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) , D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
-
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, (MESHFIELD_SIZE / 2.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, (MESHFIELD_SIZE / 2.0f)), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
-
 	SetWall(D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 0.0f, 0.0f), D3DXVECTOR3(0.0f, (D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
 	SetWall(D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 0.0f, 0.0f), D3DXVECTOR3(0.0f, (-D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
-
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, -(MESHFIELD_SIZE / 2.0f)), D3DXVECTOR3(0.0f, -D3DX_PI, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, -(MESHFIELD_SIZE / 2.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3((MESHFIELD_SIZE / 2.0f), 600, 0.0f), TYPE_BILL);
-
-
 	SetWall(D3DXVECTOR3(-WALL_X, 0.0f, 0.0f), D3DXVECTOR3(0.0f, (-D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
 	SetWall(D3DXVECTOR3(-WALL_X, 0.0f, 0.0f), D3DXVECTOR3(0.0f, (D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
-
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, WALL_X), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, WALL_X), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
-
 	SetWall(D3DXVECTOR3(WALL_X, 0.0f, 0.0f), D3DXVECTOR3(0.0f, (D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
 	SetWall(D3DXVECTOR3(WALL_X, 0.0f, 0.0f), D3DXVECTOR3(0.0f, (-D3DX_PI / 2), 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
-
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, -WALL_X), D3DXVECTOR3(0.0f, -D3DX_PI, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
 	SetWall(D3DXVECTOR3(0.0f, 0.0f, -WALL_X), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f), D3DXVECTOR3(WALL_X, WALL_Y, 0.0f), TYPE_WARKING);
 }
@@ -117,7 +109,7 @@ void InitWall(void)
 void UninitWall(void)
 {
 	if (g_pVtxBuffWall != NULL)
-	{
+	{//頂点バッファ破棄
 		g_pVtxBuffWall->Release();
 		g_pVtxBuffWall = NULL;
 	}
@@ -125,7 +117,7 @@ void UninitWall(void)
 	for (int nCnt = 0; nCnt < MAX_TYPE; nCnt++)
 	{
 		if (g_pTextureWall[nCnt] != NULL)
-		{
+		{//テクスチャ破棄
 			g_pTextureWall[nCnt]->Release();
 			g_pTextureWall[nCnt] = NULL;
 		}
@@ -143,17 +135,17 @@ void UpdateWall(void)
 	g_pVtxBuffWall->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntWall = 0; nCntWall < MAX_WALL; nCntWall++)
-	{
-		if (g_aWall[nCntWall].bUse == true)
+	{//壁の最大数分回す
+		if (g_aWall[nCntWall].bUse)
 		{
 			//頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-g_aWall[nCntWall].size.x, g_aWall[nCntWall].size.y, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(-g_aWall[nCntWall].size.x, g_aWall[nCntWall].size.y, 0.0f);	//
 			pVtx[1].pos = D3DXVECTOR3(g_aWall[nCntWall].size.x, g_aWall[nCntWall].size.y, 0.0f);
 			pVtx[2].pos = D3DXVECTOR3(-g_aWall[nCntWall].size.x, 0.0f, 0.0f);
 			pVtx[3].pos = D3DXVECTOR3(g_aWall[nCntWall].size.x, 0.0f, 0.0f);
 
 			if (g_aWall[nCntWall].type == TYPE_WARKING)
-			{
+			{//壁のタイプが一致したら
 				//テクスチャ座標の設定
 				pVtx[0].tex.x += 0.001f;
 				pVtx[1].tex.x += 0.001f;
@@ -162,7 +154,7 @@ void UpdateWall(void)
 			}
 		}
 
-		pVtx += 4;
+		pVtx += 4;		//頂点データのポインタを4つ分進める
 	}
 
 	//頂点バッファのアンロック
@@ -248,12 +240,12 @@ void SetWall(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXCOLOR col, D3DXVECTOR3 size, 
 	{
 		if (g_aWall[nCntWall].bUse == false)
 		{
-			g_aWall[nCntWall].pos = pos;
-			g_aWall[nCntWall].rot = rot;
-			g_aWall[nCntWall].col = col;
-			g_aWall[nCntWall].size = size;
-			g_aWall[nCntWall].bUse = true;
-			g_aWall[nCntWall].type = type;
+			g_aWall[nCntWall].pos = pos;	//位置
+			g_aWall[nCntWall].rot = rot;	//角度
+			g_aWall[nCntWall].col = col;	//カラー
+			g_aWall[nCntWall].size = size;	//サイズ
+			g_aWall[nCntWall].bUse = true;	//使っている状態にする
+			g_aWall[nCntWall].type = type;	//種類
 
 			//頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(-g_aWall[nCntWall].size.x, g_aWall[nCntWall].size.y, 0.0f);
@@ -278,7 +270,7 @@ void SetWall(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXCOLOR col, D3DXVECTOR3 size, 
 			break;
 		}
 
-		pVtx += 4;
+		pVtx += 4;		//頂点データのポインタを4つ分進める
 	}
 
 	//頂点バッファのアンロック

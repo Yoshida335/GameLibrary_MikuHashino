@@ -115,7 +115,7 @@ void SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 rot)
 			g_Collision[nCntCollision].posOld = posOld;
 			g_Collision[nCntCollision].rot = rot;
 			g_Collision[nCntCollision].bUse = true;
-			g_Collision[nCntCollision].nLife = 50;
+			g_Collision[nCntCollision].nLife = 60;
 
 			break;
 		}

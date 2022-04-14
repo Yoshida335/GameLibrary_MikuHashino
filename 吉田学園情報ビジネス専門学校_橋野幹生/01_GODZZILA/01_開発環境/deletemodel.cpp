@@ -16,12 +16,12 @@
 LPD3DXMESH g_pMeshDeleteModel = NULL;			//メッシュ情報へのポインタ
 LPD3DXBUFFER g_pBuffMatDeleteModel = NULL;		//マテリアル情報へのポインタ
 DWORD g_nNumMatDeleteModel = 0;					//マテリアル情報の数
-DeleteModel g_aDeleteModel[MAX_DELETEMODEL];
+DeleteModel g_aDeleteModel[MAX_DELETEMODEL];	//モデル(破壊後)の構造体
 D3DXMATERIAL * g_pMatDeleteModel;			//マテリアルデータへのポインタ
 LPDIRECT3DTEXTURE9 g_pTextureDelete[10];	//テクスチャへのポインタ
 
 //---------------------------------------------------
-//	モデルの初期化処理
+//	モデル(破壊後)の初期化処理
 //---------------------------------------------------
 void InitDeleteModel(void)
 {
@@ -59,7 +59,7 @@ void InitDeleteModel(void)
 }
 
 //---------------------------------------------------
-//	モデルの終了処理
+//	モデル(破壊後)の終了処理
 //---------------------------------------------------
 void UninitDeleteModel(void)
 {
@@ -89,7 +89,7 @@ void UninitDeleteModel(void)
 }
 
 //---------------------------------------------------
-//	モデルの更新処理
+//	モデル(破壊後)の更新処理
 //---------------------------------------------------
 void UpdateDeleteModel(void)
 {
@@ -97,7 +97,7 @@ void UpdateDeleteModel(void)
 }
 
 //---------------------------------------------------
-//	モデルの描画処理
+//	モデル(破壊後)の描画処理
 //---------------------------------------------------
 void DrawDeleteModel(void)
 {
@@ -155,18 +155,17 @@ void DrawDeleteModel(void)
 }
 
 //---------------------------------------------------
-//	モデルの設定
+//	モデル(破壊後)の設定
 //---------------------------------------------------
 void SetDeleteModel(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	for (int nCntModel = 0; nCntModel < MAX_DELETEMODEL; nCntModel++)
 	{
-		if (g_aDeleteModel[nCntModel].bUse == false)
+		if (!g_aDeleteModel[nCntModel].bUse)
 		{// bUseがfalseだったら、
-			g_aDeleteModel[nCntModel].pos = pos;
-			g_aDeleteModel[nCntModel].rot = rot;
-			g_aDeleteModel[nCntModel].bUse = true;
-
+			g_aDeleteModel[nCntModel].pos = pos;	//位置
+			g_aDeleteModel[nCntModel].rot = rot;	//角度
+			g_aDeleteModel[nCntModel].bUse = true;	//使っている状態にする
 			break;
 		}
 	}

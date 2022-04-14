@@ -23,7 +23,6 @@
 #include "effect.h"
 #include "particle.h"
 #include "player.h"
-#include "line.h"
 #include "enemy.h"
 #include "collision.h"
 #include "map.h"
@@ -65,9 +64,6 @@ void InitGame(void)
 
 	//影の初期設定
 	InitShadow();
-
-	//ラインの初期設定
-	InitLine();
 
 	//ライフゲージの初期設定
 	InitGage();
@@ -142,9 +138,6 @@ void UninitGame(void)
 
 	//敵の終了処理
 	UninitEnemy();
-
-	//ラインの終了処理
-	UninitLine();
 
 	//当たり判定の終了処理
 	UninitCollision();
@@ -231,9 +224,6 @@ void UpdateGame(void)
 		//破壊後モデルの更新処理
 		UpdateDeleteModel();
 
-		//ラインの更新処理
-		UpdateLine();
-
 		//影の更新処理
 		UpdateShadow();
 
@@ -294,9 +284,6 @@ void DrawGame(void)
 
 		//モデルの描画処理
 		DrawModel();
-
-		//ラインの描画処理
-		DrawLine();
 
 		//プレイヤーの描画処理
 		DrawPlayer();

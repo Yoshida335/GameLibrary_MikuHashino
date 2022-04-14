@@ -27,8 +27,7 @@ void InitShadow(void)
 		g_aShadow[nCntShadow].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aShadow[nCntShadow].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aShadow[nCntShadow].bUse = false;
-		g_aShadow[nCntShadow].size_X = 0.0f;
-		g_aShadow[nCntShadow].size_Z = 0.0f;
+		g_aShadow[nCntShadow].size = 0.0f;
 	}
 
 	//頂点バッファの生成
@@ -45,12 +44,12 @@ void InitShadow(void)
 	g_pVtxBuffShadow->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntShadow = 0; nCntShadow < MAX_SHADOW; nCntShadow++)
-	{
+	{//最大数分回す
 		//頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size_X / 2), 0.0f, (g_aShadow[nCntShadow].size_Z / 2));
-		pVtx[1].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size_X / 2), 0.0f, (g_aShadow[nCntShadow].size_Z / 2));
-		pVtx[2].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size_X / 2), 0.0f, -(g_aShadow[nCntShadow].size_Z / 2));
-		pVtx[3].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size_X / 2), 0.0f, -(g_aShadow[nCntShadow].size_Z / 2));
+		pVtx[0].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size / 2), 0.0f, (g_aShadow[nCntShadow].size / 2));
+		pVtx[1].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size / 2), 0.0f, (g_aShadow[nCntShadow].size / 2));
+		pVtx[2].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size / 2), 0.0f, -(g_aShadow[nCntShadow].size / 2));
+		pVtx[3].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size / 2), 0.0f, -(g_aShadow[nCntShadow].size / 2));
 
 		//各頂点の法線の設定(ベクトルの大きさは１にする)
 		pVtx[0].nor = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
@@ -70,7 +69,7 @@ void InitShadow(void)
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
-		pVtx += 4;
+		pVtx += 4;	//頂点数分+4
 	}
 
 	//頂点バッファのアンロック
@@ -83,13 +82,13 @@ void InitShadow(void)
 void UninitShadow(void)
 {
 	if (g_pVtxBuffShadow != NULL)
-	{
+	{//頂点バッファの破棄
 		g_pVtxBuffShadow->Release();
 		g_pVtxBuffShadow = NULL;
 	}
 
 	if (g_pTextureShadow != NULL)
-	{
+	{//テクスチャの破棄
 		g_pTextureShadow->Release();
 		g_pTextureShadow = NULL;
 	}
@@ -100,7 +99,7 @@ void UninitShadow(void)
 //---------------------------------------------------
 void UpdateShadow(void)
 {
-
+	//処理なし
 }
 
 //---------------------------------------------------
@@ -113,9 +112,9 @@ void DrawShadow(void)
 	D3DXMATRIX mtxRot, mtxTrans;		//計算用マトリックス
 
 	for (int nCntShadow = 0; nCntShadow < MAX_SHADOW; nCntShadow++)
-	{
-		if (g_aShadow[nCntShadow].bUse == true)
-		{
+	{//最大数分回す
+		if (g_aShadow[nCntShadow].bUse)
+		{//使用している時、描画する
 			//ワールドマトリックスの初期化
 			D3DXMatrixIdentity(&g_aShadow[nCntShadow].mtxWorld);
 
@@ -164,7 +163,7 @@ void DrawShadow(void)
 //---------------------------------------------------
 //	影の設定
 //---------------------------------------------------
-int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float size_x, float size_z)
+int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float size)
 {
 	int nCntShadow;
 	VERTEX_3D * pVtx = NULL;
@@ -174,21 +173,20 @@ int SetShadow(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float size_x, float size_z)
 
 	for (nCntShadow = 0; nCntShadow < MAX_SHADOW; nCntShadow++)
 	{
-		if (g_aShadow[nCntShadow].bUse == false)
+		if (!g_aShadow[nCntShadow].bUse)
 		{
 			g_aShadow[nCntShadow].pos = pos;
 			g_aShadow[nCntShadow].rot = rot;
 			g_aShadow[nCntShadow].bUse = true;
-			g_aShadow[nCntShadow].size_X = size_x;
-			g_aShadow[nCntShadow].size_Z = size_z;
+			g_aShadow[nCntShadow].size = size;
 
 			//頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size_X / 2), 0.0f, (g_aShadow[nCntShadow].size_Z / 2));
-			pVtx[1].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size_X / 2), 0.0f, (g_aShadow[nCntShadow].size_Z / 2));
-			pVtx[2].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size_X / 2), 0.0f, -(g_aShadow[nCntShadow].size_Z / 2));
-			pVtx[3].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size_X / 2), 0.0f, -(g_aShadow[nCntShadow].size_Z / 2));
+			pVtx[0].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size / 2), 0.0f, (g_aShadow[nCntShadow].size / 2));
+			pVtx[1].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size / 2), 0.0f, (g_aShadow[nCntShadow].size / 2));
+			pVtx[2].pos = D3DXVECTOR3(-(g_aShadow[nCntShadow].size / 2), 0.0f, -(g_aShadow[nCntShadow].size / 2));
+			pVtx[3].pos = D3DXVECTOR3((g_aShadow[nCntShadow].size / 2), 0.0f, -(g_aShadow[nCntShadow].size / 2));
 
-			pVtx += 4;
+			pVtx += 4;	//頂点数分+4
 			break;
 		}
 	}

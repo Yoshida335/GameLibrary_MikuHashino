@@ -26,19 +26,6 @@ typedef struct
 	LPDIRECT3DTEXTURE9 pTexturePlayer[10];	//テクスチャへのポインタ
 }ModelParts;
 
-/**/
-typedef struct
-{
-	D3DXVECTOR3 pos;		//現在の位置
-	D3DXVECTOR3 posOld;		//前回の位置
-	D3DXVECTOR3 rot;		//向き
-	D3DXVECTOR3 move;		//移動量
-	D3DXMATRIX mtxWorld;	//ワールドマトリクス
-	D3DXVECTOR3 vtxMin;		//頂点の最小値を取得用
-	D3DXVECTOR3 vtxMax;		//頂点の最大値を取得用
-	D3DXVECTOR3 size;		//サイズ保存用
-}SetPlayer;
-
 //プレイヤーの構造体
 typedef struct
 {
@@ -58,6 +45,13 @@ typedef struct
 	int nLife;				//体力
 }Player;
 
+typedef struct
+{
+	D3DXVECTOR3 pos;		//現在の位置
+	D3DXVECTOR3 posOld;		//前回の位置
+	D3DXVECTOR3 rot;		//向き
+}SetPlayer;
+
 //プロトタイプ宣言
 void InitPlayer(void);		//プレイヤーの初期化
 void UninitPlayer(void);	//プレイヤーの終了
@@ -68,7 +62,7 @@ Player * GetPlayer(void);	//プレイヤーの情報
 void MotionPlayer(int nMotion);		//プレイヤーのモーション設定
 void SetMotion(int nSet);	//モーションを設定する
 void HitModel(int nDamage);	//プレイヤーの攻撃ヒットした時の処理
-bool CollisionPlayer(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);
+bool CollisionPlayer(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);	//プレイヤーと敵との当たり判定
 void ControlPlayer(void);	//プレイヤーの操作に関する処理
 
 #endif

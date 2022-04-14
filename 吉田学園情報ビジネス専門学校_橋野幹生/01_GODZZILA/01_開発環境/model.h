@@ -40,9 +40,9 @@ typedef struct
 
 typedef struct
 {
-	float nModelP;
-	float nMaxLife;
-	float nMax;
+	float nModelP;		//モデルの破壊状況をパーセントで把握するよう
+	float nMaxLife;		//bUseがtrueになっているモデルの、合計体力数
+	float nMax;			//bUseがtrueになっているモデルの、合計数
 }Parcent;
 
 //プロトタイプ宣言
@@ -50,12 +50,12 @@ void InitModel(void);		//モデルの初期化
 void UninitModel(void);		//モデルの終了
 void UpdateModel(void);		//モデルの更新
 void DrawModel(void);		//モデルの描画
-void SetModel(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, int life);	//モデルの設定
+void SetModel(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, int life);		//モデルの設定
 bool CollisionModel(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size, D3DXVECTOR3 *move);	//モデルの当たり判定
 void CollisionAttack(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);	//モデルの当たり判定
-void HitModel(int nCntModel, int nDamage);
-Parcent * GetModeParcent(void);
-void SaveParcent(void);
-void LoadP(void);
+void HitModel(int nCntModel, int nDamage);	//モデルに攻撃が当たった時の処理
+Parcent * GetModeParcent(void);	//破壊状況の情報
+void SaveParcent(void);			//パーセント保存
+void LoadP(void);				//パーセント読み込み
 
 #endif

@@ -20,16 +20,16 @@ typedef struct
 	int nIdxShadow;			//影用
 	bool bUse;				//使用しているかどうか
 	int nLife;				//寿命
-	D3DXVECTOR3 posdis;
+	D3DXVECTOR3 posdis;		//プレイヤーとの距離を求めるよう
 }Bullet;
 
 //プロトタイプ宣言
-void InitBullet(void);
-void UninitBullet(void);
-void UpdateBullet(void);
-void DrawBullet(void);
-void SetBullet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
-void CollisionBullet(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size, D3DXVECTOR3 *move);
+void InitBullet(void);		//弾の初期化処理
+void UninitBullet(void);	//弾の終了処理
+void UpdateBullet(void);	//弾の更新処理
+void DrawBullet(void);		//弾の描画処理
+void SetBullet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	//弾の設定
+void CollisionBullet(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);	//弾の当たり判定
 
 #endif
 

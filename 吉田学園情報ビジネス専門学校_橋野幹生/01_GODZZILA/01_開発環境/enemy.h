@@ -43,9 +43,9 @@ void InitEnemy(void);		//“G‚Ì‰Šú‰»
 void UninitEnemy(void);		//“G‚ÌI—¹
 void UpdateEnemy(void);		//“G‚ÌXV
 void DrawEnemy(void);		//“G‚Ì•`‰æ
-void SetEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, ENEMYTYPE type, int life);	//“G‚Ìİ’è
-void CollisionEnemy(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);
-void HitEnemyl(int nCntModel, int nDamage);
+void SetEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, ENEMYTYPE type, int life);		//“G‚Ìİ’è
+void CollisionEnemy(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size);	//“G‚Ì“–‚½‚è”»’è
+void HitEnemyl(int nCntModel, int nDamage);	//“G‚ÉUŒ‚‚ª“–‚½‚Á‚½ˆ—
 
 #endif
 

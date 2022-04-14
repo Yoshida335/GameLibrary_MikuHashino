@@ -13,10 +13,11 @@
 #define WALL_Y		(140.0f)	// y方向への値	高さ
 #define WALL_Z		(0.0f)		// z方向への値	縦幅
 
+//テクスチャの種類
 typedef enum
 {
-	TYPE_WARKING = 0,
-	TYPE_BILL,
+	TYPE_WARKING = 0,	//危険テクスチャ
+	TYPE_BILL,			//ビルテクスチャ
 	MAX_TYPE
 }WALLTYPE;
 

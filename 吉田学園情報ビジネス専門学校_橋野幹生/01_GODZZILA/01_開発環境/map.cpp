@@ -12,7 +12,6 @@
 #define MAX_X		(10)	// x軸に置けるブロックの最大数
 #define MAX_Y		(10)	// y軸に置けるブロックの最大数
 #define FILE_PAS	("data\\map2.txt")	//マップの情報が入っているデータ
-#define FIELD_SIZE	(600.0f)
 
 FILE * pFile;
 int nData[MAX_Y][MAX_X];

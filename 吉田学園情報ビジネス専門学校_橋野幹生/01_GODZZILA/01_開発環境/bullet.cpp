@@ -12,18 +12,19 @@
 #define Bullet_X		(3.0f)	// x方向への値	横幅
 #define Bullet_Y		(3.0f)	// y方向への値	高さ
 #define Bullet_Z		(3.0f)	// z方向への値	縦幅
+#define BULLET_DAMAGE	(25)		// 弾で与えるダメージ量
 
 //グローバル変数宣言
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBullet = NULL;		//頂点バッファへのポインタ
-LPDIRECT3DTEXTURE9 g_pTextureBullet = NULL;
-Bullet g_aBullet[MAX_BULLET];
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBullet = NULL;	//頂点バッファへのポインタ
+LPDIRECT3DTEXTURE9 g_pTextureBullet = NULL;			//テクスチャのへのポインタ
+Bullet g_aBullet[MAX_BULLET];	//弾の構造体
 
 //---------------------------------------------------
 //	弾の初期化
 //---------------------------------------------------
 void InitBullet(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();			//デバイス取得
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイス取得
 
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(
@@ -34,12 +35,12 @@ void InitBullet(void)
 	//弾の各値初期化
 	for (int nCntBullet = 0; nCntBullet < MAX_BULLET; nCntBullet++)
 	{
-		g_aBullet[nCntBullet].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aBullet[nCntBullet].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aBullet[nCntBullet].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		g_aBullet[nCntBullet].bUse = false;
-		g_aBullet[nCntBullet].nLife = 0;
-		g_aBullet[nCntBullet].posdis = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aBullet[nCntBullet].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//位置
+		g_aBullet[nCntBullet].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		//角度
+		g_aBullet[nCntBullet].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	//カラー
+		g_aBullet[nCntBullet].bUse = false;		//使っているかどうか
+		g_aBullet[nCntBullet].nLife = 0;		//寿命
+		g_aBullet[nCntBullet].posdis = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//プレイヤーとの差を求める用
 	}
 
 	//頂点バッファの生成
@@ -81,7 +82,7 @@ void InitBullet(void)
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
-		pVtx += 4;
+		pVtx += 4;		//頂点データのポインタを4つ分進める
 	}
 
 	//頂点バッファのアンロック
@@ -94,13 +95,13 @@ void InitBullet(void)
 void UninitBullet(void)
 {
 	if (g_pVtxBuffBullet != NULL)
-	{
+	{//頂点バッファ破棄
 		g_pVtxBuffBullet->Release();
 		g_pVtxBuffBullet = NULL;
 	}
 
 	if (g_pTextureBullet != NULL)
-	{
+	{//テクスチャ破棄
 		g_pTextureBullet->Release();
 		g_pTextureBullet = NULL;
 	}
@@ -112,9 +113,9 @@ void UninitBullet(void)
 void UpdateBullet(void)
 {
 	for (int nCntBullet = 0; nCntBullet < MAX_BULLET; nCntBullet++)
-	{
-		if (g_aBullet[nCntBullet].bUse == true)
-		{
+	{//バレットの最大数分回す
+		if (g_aBullet[nCntBullet].bUse)
+		{//弾が使用されている時
 			//弾の位置移動
 			g_aBullet[nCntBullet].pos.x -= sinf(g_aBullet[nCntBullet].rot.y) * 1.0f;
 			g_aBullet[nCntBullet].pos.z -= cosf(g_aBullet[nCntBullet].rot.y) * 1.0f;
@@ -137,8 +138,8 @@ void UpdateBullet(void)
 			//正規化する
 			D3DXVec3Normalize(&g_aBullet[nCntBullet].posdis, &g_aBullet[nCntBullet].posdis);
 
+			//プレイヤーの方向に追尾
 			g_aBullet[nCntBullet].pos += g_aBullet[nCntBullet].posdis * 1.0f;
-
 
 			//エフェクト効果
 			SetEffect(g_aBullet[nCntBullet].pos, g_aBullet[nCntBullet].rot, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f), 40, D3DXVECTOR3(4.0f, 4.0f, 0.0f));
@@ -153,8 +154,8 @@ void UpdateBullet(void)
 void DrawBullet(void)
 {
 	//デバイス取得
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;		//計算用マトリックス
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイス取得
+	D3DXMATRIX mtxRot, mtxTrans;				//計算用マトリックス
 
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, true);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
@@ -222,14 +223,13 @@ void DrawBullet(void)
 void SetBullet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	for (int nCntBullet = 0; nCntBullet < MAX_BULLET; nCntBullet++)
-	{
-		if (g_aBullet[nCntBullet].bUse == false)
-		{
-			g_aBullet[nCntBullet].pos = pos;
-			g_aBullet[nCntBullet].rot = rot;
-			g_aBullet[nCntBullet].bUse = true;
-			g_aBullet[nCntBullet].nLife = 100;
-
+	{//弾の最大数分回す
+		if (!g_aBullet[nCntBullet].bUse)
+		{//弾が使用されていない状態の時
+			g_aBullet[nCntBullet].pos = pos;	//位置
+			g_aBullet[nCntBullet].rot = rot;	//角度
+			g_aBullet[nCntBullet].bUse = true;	//使っているかどうか(使っている状態にする)
+			g_aBullet[nCntBullet].nLife = 100;	//寿命
 			break;
 		}
 	}
@@ -238,79 +238,83 @@ void SetBullet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //---------------------------------------------------
 //	弾の当たり判定処理
 //---------------------------------------------------
-void CollisionBullet(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size, D3DXVECTOR3 *move)
+void CollisionBullet(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size)
 {
-	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
-	{//最大モデル数分確認
-		if (g_aBullet[nCntModel].bUse == true)
-		{// bUseがtrueだったら（モデルが使用されている状態の時
-
-		 /**/
-			if (pos->x - (size.x / 2) < g_aBullet[nCntModel].pos.x + (Bullet_X / 2.0f) &&
-				pos->x + (size.x / 2) > g_aBullet[nCntModel].pos.x - (Bullet_X / 2.0f) &&
-				pos->z - (size.z / 2) < g_aBullet[nCntModel].pos.z + (Bullet_Z / 2.0f) &&
-				pos->z + (size.z / 2) > g_aBullet[nCntModel].pos.z - (Bullet_Z / 2.0f))
-			{
-				if (posOld->y + size.y <= g_aBullet[nCntModel].pos.y - (Bullet_Y / 2.0f) &&
-					pos->y + size.y > g_aBullet[nCntModel].pos.y - (Bullet_Y / 2.0f))
-				{//モデルの下からめり込んだ時の当たり判定
-					g_aBullet[nCntModel].bUse = false;	//弾を消す
-					HitModel(4);	//プレイヤーのヒット処理
-
+	for (int nCntBullet = 0; nCntBullet < MAX_BULLET; nCntBullet++)
+	{//弾の最大数分回す
+		if (!g_aBullet[nCntBullet].bUse)
+		{// bUseがfalseだったら（モデルが使用されていない状態の時、終わる
+			continue;
+		}
+		if (pos->x - (size.x / 2) < g_aBullet[nCntBullet].pos.x + (Bullet_X / 2.0f) &&
+			pos->x + (size.x / 2) > g_aBullet[nCntBullet].pos.x - (Bullet_X / 2.0f) &&
+			pos->z - (size.z / 2) < g_aBullet[nCntBullet].pos.z + (Bullet_Z / 2.0f) &&
+			pos->z + (size.z / 2) > g_aBullet[nCntBullet].pos.z - (Bullet_Z / 2.0f))
+		{
+			if (posOld->y + size.y <= g_aBullet[nCntBullet].pos.y - (Bullet_Y / 2.0f) &&
+				pos->y + size.y > g_aBullet[nCntBullet].pos.y - (Bullet_Y / 2.0f))
+			{//モデルの下からめり込んだ時の当たり判定
+				g_aBullet[nCntBullet].bUse = false;	//弾を消す
+				HitModel(BULLET_DAMAGE);	//プレイヤーのヒット処理
+				//エフェクトを設定
+				SetEffect(D3DXVECTOR3(g_aBullet[nCntBullet].pos.x, g_aBullet[nCntBullet].pos.y, g_aBullet[nCntBullet].pos.z), g_aBullet[nCntBullet].rot, D3DXCOLOR(1.0f, 0.0f, 0.5f, 1.0f), 100, D3DXVECTOR3(40.0f, 40.0f, 0.0f));
+			}
+			if (posOld->y >= g_aBullet[nCntBullet].pos.y + (Bullet_Y / 2.0f) &&
+				pos->y < g_aBullet[nCntBullet].pos.y + (Bullet_Y / 2.0f))
+			{//モデルの上からめり込んだ時の当たり判定
+				g_aBullet[nCntBullet].bUse = false;	//弾を消す
+				HitModel(BULLET_DAMAGE);	//プレイヤーのヒット処理
+				//エフェクトを設定
+				SetEffect(D3DXVECTOR3(g_aBullet[nCntBullet].pos.x, g_aBullet[nCntBullet].pos.y, g_aBullet[nCntBullet].pos.z), g_aBullet[nCntBullet].rot, D3DXCOLOR(1.0f, 0.0f, 0.5f, 1.0f), 100, D3DXVECTOR3(40.0f, 40.0f, 0.0f));
+			}
+		}
+		if (pos->y < g_aBullet[nCntBullet].pos.y + (Bullet_Y / 2.0f) &&
+			pos->y + (size.y) > g_aBullet[nCntBullet].pos.y - (Bullet_Y / 2.0f))
+		{
+			if (pos->z - (size.z / 2) < g_aBullet[nCntBullet].pos.z + (Bullet_Z / 2.0f) &&
+				pos->z + (size.z / 2) > g_aBullet[nCntBullet].pos.z - (Bullet_Z / 2.0f))
+			{// *posのz座標がモデルに重なっている時
+				if (posOld->x + (size.x / 2) <= g_aBullet[nCntBullet].pos.x - (Bullet_X / 2.0f) &&
+					pos->x + (size.x / 2) >= g_aBullet[nCntBullet].pos.x - (Bullet_X / 2.0f))
+				{//左側からモデルにめり込んだ時
+				 //*pos.xにモデルのpos.x(左側)を設定
+					g_aBullet[nCntBullet].bUse = false;	//弾を消す
+					HitModel(BULLET_DAMAGE);	//プレイヤーのヒット処理
+					//エフェクトを設定
+					SetEffect(D3DXVECTOR3(g_aBullet[nCntBullet].pos.x, g_aBullet[nCntBullet].pos.y, g_aBullet[nCntBullet].pos.z), g_aBullet[nCntBullet].rot, D3DXCOLOR(1.0f, 0.0f, 0.5f, 1.0f), 100, D3DXVECTOR3(40.0f, 40.0f, 0.0f));
 				}
-				if (posOld->y >= g_aBullet[nCntModel].pos.y + (Bullet_Y / 2.0f) &&
-					pos->y < g_aBullet[nCntModel].pos.y + (Bullet_Y / 2.0f))
-				{//モデルの上からめり込んだ時の当たり判定
-					g_aBullet[nCntModel].bUse = false;	//弾を消す
-					HitModel(4);	//プレイヤーのヒット処理
-
+				else if (posOld->x - (size.x / 2) >= g_aBullet[nCntBullet].pos.x + (Bullet_X / 2.0f) &&
+					pos->x - (size.x / 2) <= g_aBullet[nCntBullet].pos.x + (Bullet_X / 2.0f))
+				{//右側からモデルにめり込んだ時
+				 //*pos.xにモデルのpos.x(右側)を設定
+					g_aBullet[nCntBullet].bUse = false;	//弾を消す
+					HitModel(BULLET_DAMAGE);	//プレイヤーのヒット処理
+					//エフェクトを設定
+					SetEffect(D3DXVECTOR3(g_aBullet[nCntBullet].pos.x, g_aBullet[nCntBullet].pos.y, g_aBullet[nCntBullet].pos.z), g_aBullet[nCntBullet].rot, D3DXCOLOR(1.0f, 0.0f, 0.5f, 1.0f), 100, D3DXVECTOR3(40.0f, 40.0f, 0.0f));
 				}
 			}
-			if (pos->y < g_aBullet[nCntModel].pos.y + (Bullet_Y / 2.0f) &&
-				pos->y + (size.y) > g_aBullet[nCntModel].pos.y - (Bullet_Y / 2.0f))
-			{
-				if (pos->z - (size.z / 2) < g_aBullet[nCntModel].pos.z + (Bullet_Z / 2.0f) &&
-					pos->z + (size.z / 2) > g_aBullet[nCntModel].pos.z - (Bullet_Z / 2.0f))
-				{// *posのz座標がモデルに重なっている時
-					if (posOld->x + (size.x / 2) <= g_aBullet[nCntModel].pos.x - (Bullet_X / 2.0f) &&
-						pos->x + (size.x / 2) >= g_aBullet[nCntModel].pos.x - (Bullet_X / 2.0f))
-					{//左側からモデルにめり込んだ時
-					 //*pos.xにモデルのpos.x(左側)を設定
-						g_aBullet[nCntModel].bUse = false;	//弾を消す
-						HitModel(4);	//プレイヤーのヒット処理
-
-					}
-					else if (posOld->x - (size.x / 2) >= g_aBullet[nCntModel].pos.x + (Bullet_X / 2.0f) &&
-						pos->x - (size.x / 2) <= g_aBullet[nCntModel].pos.x + (Bullet_X / 2.0f))
-					{//右側からモデルにめり込んだ時
-					 //*pos.xにモデルのpos.x(右側)を設定
-						g_aBullet[nCntModel].bUse = false;	//弾を消す
-						HitModel(4);	//プレイヤーのヒット処理
-
-					}
+			if (pos->x - (size.x / 2) < g_aBullet[nCntBullet].pos.x + (Bullet_X / 2.0f) &&
+				pos->x + (size.x / 2) > g_aBullet[nCntBullet].pos.x - (Bullet_X / 2.0f))
+			{// *posのx座標がモデルに重なっている時
+				if (posOld->z - (size.z / 2) <= g_aBullet[nCntBullet].pos.z - (Bullet_Z / 2.0f) &&
+					pos->z + (size.z / 2) > g_aBullet[nCntBullet].pos.z - (Bullet_Z / 2.0f))
+				{//モデルの手前側からめり込んだ時
+				 //*pos.zにモデルのpos.z(手前側)を設定
+					g_aBullet[nCntBullet].bUse = false;	//弾を消す
+					HitModel(BULLET_DAMAGE);	//プレイヤーのヒット処理
+					//エフェクトを設定
+					SetEffect(D3DXVECTOR3(g_aBullet[nCntBullet].pos.x, g_aBullet[nCntBullet].pos.y, g_aBullet[nCntBullet].pos.z), g_aBullet[nCntBullet].rot, D3DXCOLOR(1.0f, 0.0f, 0.5f, 1.0f), 100, D3DXVECTOR3(40.0f, 40.0f, 0.0f));
 				}
-				if (pos->x - (size.x / 2) < g_aBullet[nCntModel].pos.x + (Bullet_X / 2.0f) &&
-					pos->x + (size.x / 2) > g_aBullet[nCntModel].pos.x - (Bullet_X / 2.0f))
-				{// *posのx座標がモデルに重なっている時
-					if (posOld->z - (size.z / 2) <= g_aBullet[nCntModel].pos.z - (Bullet_Z / 2.0f) &&
-						pos->z + (size.z / 2) > g_aBullet[nCntModel].pos.z - (Bullet_Z / 2.0f))
-					{//モデルの手前側からめり込んだ時
-					 //*pos.zにモデルのpos.z(手前側)を設定
-						g_aBullet[nCntModel].bUse = false;	//弾を消す
-						HitModel(4);	//プレイヤーのヒット処理
-
-					}
-					else if (posOld->z + (size.z / 2) >= g_aBullet[nCntModel].pos.z + (Bullet_Z / 2.0f) &&
-						pos->z - (size.z / 2) < g_aBullet[nCntModel].pos.z + (Bullet_Z / 2.0f))
-					{//モデルの奥側からめり込んだ時
-					 //*pos.zにモデルのpos.z(奥側)を設定
-						g_aBullet[nCntModel].bUse = false;	//弾を消す
-						HitModel(4);	//プレイヤーのヒット処理
-
-					}
+				else if (posOld->z + (size.z / 2) >= g_aBullet[nCntBullet].pos.z + (Bullet_Z / 2.0f) &&
+					pos->z - (size.z / 2) < g_aBullet[nCntBullet].pos.z + (Bullet_Z / 2.0f))
+				{//モデルの奥側からめり込んだ時
+				 //*pos.zにモデルのpos.z(奥側)を設定
+					g_aBullet[nCntBullet].bUse = false;	//弾を消す
+					HitModel(BULLET_DAMAGE);	//プレイヤーのヒット処理
+					//エフェクトを設定
+					SetEffect(D3DXVECTOR3(g_aBullet[nCntBullet].pos.x, g_aBullet[nCntBullet].pos.y, g_aBullet[nCntBullet].pos.z), g_aBullet[nCntBullet].rot, D3DXCOLOR(1.0f, 0.0f, 0.5f, 1.0f), 100, D3DXVECTOR3(40.0f, 40.0f, 0.0f));
 				}
 			}
 		}
 	}
-
 }

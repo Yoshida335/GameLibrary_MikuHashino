@@ -171,7 +171,7 @@ void UpdateGage(void)
 
 	for (int nCntGage = 0; nCntGage < MAX_GAGE; nCntGage++)
 	{
-		if (g_aGage[nCntGage].bUse == true)
+		if (g_aGage[nCntGage].bUse)
 		{
 			//テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(0.0f + ((0.5f / g_aGage[nCntGage].nMaxLife) * (g_aGage[nCntGage].nMaxLife - g_aGage[nCntGage].nLife)), 0.0f);
@@ -185,7 +185,7 @@ void UpdateGage(void)
 			}
 
 			//確認用
-			if (GetKeyboardTrigger(DIK_O) == true)
+			if (GetKeyboardTrigger(DIK_O))
 			{
 				g_aGage[nCntGage].nLife--;
 			}
@@ -208,7 +208,7 @@ void DrawGage(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;				//計算用マトリックス
 
-												// Zバッファに関して
+	// Zバッファに関して
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, false);
 

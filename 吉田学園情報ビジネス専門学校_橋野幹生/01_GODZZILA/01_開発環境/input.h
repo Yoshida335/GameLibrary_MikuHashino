@@ -5,8 +5,6 @@
 #ifndef _INPUT_H_
 #define _INPUT_H_
 
-
-
 //キー種類(マウス)
 typedef enum
 {
@@ -20,7 +18,6 @@ typedef enum
 	MOUSE_INPUT_8,				//マウスボタン8
 }MOUSE;
 
-
 #include "main.h"
 
 //プロトタイプ宣言
@@ -30,10 +27,10 @@ void UpdateKeyboard(void);				//キーボードの更新
 bool GetKeyboardPress(int nKey);		//キーボードのプレス情報
 bool GetKeyboardTrigger(int nKey);		//キーボードのトリガー情報
 
-HRESULT InitMouse(HINSTANCE hInstance, HWND hWnd);
-void UninitInputMouse(void);
-void UpdateInputMouse(void);
-bool GetMousePress(MOUSE mouse);
-bool GetMouseTrigger(MOUSE mouse);
+HRESULT InitMouse(HINSTANCE hInstance, HWND hWnd);		//マウスの初期化
+void UninitInputMouse(void);		//マウスの終了処理
+void UpdateInputMouse(void);		//マウスの更新処理
+bool GetMousePress(MOUSE mouse);	//マウスのプレス情報
+bool GetMouseTrigger(MOUSE mouse);	//マウスのトリガー情報
 
 #endif

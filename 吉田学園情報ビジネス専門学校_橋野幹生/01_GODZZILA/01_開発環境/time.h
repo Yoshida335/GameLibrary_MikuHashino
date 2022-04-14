@@ -10,17 +10,17 @@
 //フェードの状態
 typedef enum
 {
-	TIME_ON = 0,			//タイム中
-	TIME_OFF,				//タイム終了
+	TIME_ON = 0,	//タイム中
+	TIME_OFF,		//タイム終了
 	TIME_MAX
 }TIME;
 
 //プロトタイプ宣言
-void InitTime(void);	//タイムの初期化
-void UninitTime(void);	//タイムの終了
-void UpdateTime(void);	//タイムの更新
-void DrawTime(void);	//タイムの描画
-int * GetTime(void);	//タイムの情報
+void InitTime(void);		//タイムの初期化
+void UninitTime(void);		//タイムの終了
+void UpdateTime(void);		//タイムの更新
+void DrawTime(void);		//タイムの描画
+int * GetTime(void);		//タイムの情報
 void AddTime(int nTime);	//タイムの加算
 
 #endif

@@ -25,7 +25,6 @@ int g_nSetModel = 0;
 int g_nMaxSetModel = 0;
 Parcent g_Parcent;
 D3DXMATERIAL * g_pMatModel;			//マテリアルデータへのポインタ
-
 LPDIRECT3DTEXTURE9 g_pTexture[TYPE_MAX][10];	//テクスチャへのポインタ
 
 //---------------------------------------------------
@@ -74,10 +73,10 @@ void InitModel(void)
 		g_aModel[nCntModel].bUse = false;								//使ってるかどうか
 		g_aModel[nCntModel].vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);						//頂点の最小値取得用
 		g_aModel[nCntModel].vtxMax = D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f);		//頂点の最大値取得用
-		g_aModel[nCntModel].nType = TYPE_BILL_01;
-		g_aModel[nCntModel].nLife = 0;
-		g_aModel[nCntModel].bHit = false;
-		g_aModel[nCntModel].nCntTime = 0;
+		g_aModel[nCntModel].nType = TYPE_BILL_01;	//種類
+		g_aModel[nCntModel].nLife = 0;				//寿命
+		g_aModel[nCntModel].bHit = false;			//攻撃が当たったかどうか
+		g_aModel[nCntModel].nCntTime = 0;			//クールタイムのカウント用
 	}
 
 	g_Parcent.nMax = 0.0f;
@@ -218,7 +217,7 @@ void UninitModel(void)
 		for (int nCntMat = 0; nCntMat < (int)g_nNumMatModel; nCntMat++)
 		{
 			if (g_pTexture[i][nCntMat] != NULL)
-			{
+			{//テクスチャ破棄
 				g_pTexture[i][nCntMat]->Release();
 				g_pTexture[i][nCntMat] = NULL;
 			}
@@ -243,9 +242,9 @@ void UpdateModel(void)
 
 	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
 	{
-		if (g_aModel[nCntModel].bUse == true)
+		if (g_aModel[nCntModel].bUse)
 		{//モデルが使用されている時
-			if (g_aModel[nCntModel].bHit == true)
+			if (g_aModel[nCntModel].bHit)
 			{
 				g_aModel[nCntModel].nCntTime++;
 
@@ -325,17 +324,17 @@ void SetModel(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MODELTYPE type, int life)
 	{
 		if (g_aModel[nCntModel].bUse == false)
 		{// bUseがfalseだったら、
-			g_aModel[nCntModel].pos = pos;
-			g_aModel[nCntModel].rot = rot;
-			g_aModel[nCntModel].bUse = true;
-			g_aModel[nCntModel].nType = type;
-			g_aModel[nCntModel].nLife = life;
-
+			g_aModel[nCntModel].pos = pos;		//位置
+			g_aModel[nCntModel].rot = rot;		//角度
+			g_aModel[nCntModel].bUse = true;	//使っているかどうか(使っている状態にする)
+			g_aModel[nCntModel].nType = type;	//種類
+			g_aModel[nCntModel].nLife = life;	//寿命
+			//寿命を表示するゲージの設定
 			SetGage(D3DXVECTOR3(g_aModel[nCntModel].pos.x, g_aModel[nCntModel].pos.y + 100.0f, g_aModel[nCntModel].pos.z),	//位置
 				g_aModel[nCntModel].nLife);					//寿命
 
-			g_Parcent.nMaxLife += g_aModel[nCntModel].nLife = life;
-			g_Parcent.nMax += g_aModel[nCntModel].nLife = life;
+			g_Parcent.nMaxLife += g_aModel[nCntModel].nLife;	//全体の最大寿命の値を保存
+			g_Parcent.nMax += g_aModel[nCntModel].nLife;		//全体の
 
 			g_nMaxSetModel++;
 
@@ -353,7 +352,7 @@ bool CollisionModel(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size, D3D
 
 	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
 	{//最大モデル数分確認
-		if (g_aModel[nCntModel].bUse == true)
+		if (g_aModel[nCntModel].bUse)
 		{// bUseがtrueだったら（モデルが使用されている状態の時
 
 			/**/
@@ -425,33 +424,35 @@ void CollisionAttack(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, D3DXVECTOR3 size)
 {
 	for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
 	{//最大モデル数分確認
-		if (g_aModel[nCntModel].bUse == true)
-		{// bUseがtrueだったら（モデルが使用されている状態の時
-			if (g_aModel[nCntModel].bHit == false)
-			{// bHitがfalseだったら（攻撃が当たっていない、クールタイム中の時
-				if (pos->y < g_aModel[nCntModel].pos.y + g_aModel[nCntModel].vtxMax.y &&
-					pos->y + (size.y) > g_aModel[nCntModel].pos.y + g_aModel[nCntModel].vtxMin.y)
-				{
-					if (pos->z - (size.z / 2) < g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z &&
-						pos->z + (size.z / 2) > g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMin.z)
-					{// *posのz座標がモデルに重なっている時
-						if (pos->x - (size.x / 2) <= g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMax.x &&
-							pos->x + (size.x / 2) >= g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMin.x)
-						{//左側からモデルにめり込んだ時
-						 //*pos.xにモデルのpos.x(左側)を設定
-							HitModel(nCntModel, 1);
-						}
-					}
-					else if (pos->x - (size.x / 2) < g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMax.x &&
-						pos->x + (size.x / 2) > g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMin.x)
-					{// *posのx座標がモデルに重なっている時
-						if (pos->z - (size.z / 2) < g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z &&
-							pos->z + (size.z / 2) > g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMin.z)
-						{//モデルの手前側からめり込んだ時
-						 //*pos.zにモデルのpos.z(手前側)を設定
-							HitModel(nCntModel, 1);
-						}
-					}
+		if (!g_aModel[nCntModel].bUse)
+		{// bUseがtrueだったら、終わる
+			continue;
+		}
+		if (g_aModel[nCntModel].bHit)
+		{// bHitがtrueだったら、終わる
+			continue;
+		}
+		if (pos->y < g_aModel[nCntModel].pos.y + g_aModel[nCntModel].vtxMax.y &&
+			pos->y + (size.y) > g_aModel[nCntModel].pos.y + g_aModel[nCntModel].vtxMin.y)
+		{
+			if (pos->z - (size.z / 2) < g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z &&
+				pos->z + (size.z / 2) > g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMin.z)
+			{// *posのz座標がモデルに重なっている時
+				if (pos->x - (size.x / 2) <= g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMax.x &&
+					pos->x + (size.x / 2) >= g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMin.x)
+				{//左側からモデルにめり込んだ時
+				 //*pos.xにモデルのpos.x(左側)を設定
+					HitModel(nCntModel, 1);
+				}
+			}
+			else if (pos->x - (size.x / 2) < g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMax.x &&
+				pos->x + (size.x / 2) > g_aModel[nCntModel].pos.x + g_aModel[nCntModel].vtxMin.x)
+			{// *posのx座標がモデルに重なっている時
+				if (pos->z - (size.z / 2) < g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMax.z &&
+					pos->z + (size.z / 2) > g_aModel[nCntModel].pos.z + g_aModel[nCntModel].vtxMin.z)
+				{//モデルの手前側からめり込んだ時
+				 //*pos.zにモデルのpos.z(手前側)を設定
+					HitModel(nCntModel, 1);
 				}
 			}
 		}
@@ -480,7 +481,7 @@ void HitModel(int nCntModel, int nDamage)
 		SetDeleteModel(g_aModel[nCntModel].pos, g_aModel[nCntModel].rot);
 		g_aModel[nCntModel].bUse = false;	//消す
  		g_nSetModel++;						//配置モデル数の数を減らす
-		AddTime(5);
+		AddTime(5);							//時間を増やす
 	}
 }
 

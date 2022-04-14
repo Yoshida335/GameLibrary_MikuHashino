@@ -13,13 +13,13 @@
 //壁の構造体
 typedef struct
 {
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 rot;
-	D3DXCOLOR col;
-	D3DXMATRIX mtxWorld;
-	D3DXVECTOR3 size;
-	bool bUse;
-	int nLife;
+	D3DXVECTOR3 pos;		//位置
+	D3DXVECTOR3 rot;		//角度
+	D3DXCOLOR col;			//カラー
+	D3DXMATRIX mtxWorld;	//ワールドマトリクス
+	D3DXVECTOR3 size;		//サイズ
+	bool bUse;				//使っているかどうか
+	int nLife;				//寿命
 }Effect;
 
 //プロトタイプ宣言

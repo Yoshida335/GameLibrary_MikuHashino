@@ -7,6 +7,9 @@
 
 #include "main.h"
 
+//É}ÉNÉçíËã`
+#define FIELD_SIZE	(600.0f)
+
 typedef struct
 {
 	D3DXVECTOR3 Setpos[10];

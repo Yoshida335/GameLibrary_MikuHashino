@@ -17,7 +17,7 @@
 
 //マクロ定義
 #define CLASS_NAME			"WindowsClass"		//ウィンドウクラスの名前
-#define WINDOW_NAME			"VS.GOZZILA"		//ウィンドウの名前(キャプションに表示)
+#define WINDOW_NAME			"VS.GODZZILA"		//ウィンドウの名前(キャプションに表示)
 
 //プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

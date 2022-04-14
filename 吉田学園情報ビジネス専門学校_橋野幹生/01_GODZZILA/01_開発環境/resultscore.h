@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-#define MAX_RESULTSCORE	(16)
+#define MAX_RESULTSCORE	(16)	//スコアの最大設定数
 
 //プロトタイプ宣言
 void InitResultScore(void);		//リザルトスコアの初期化

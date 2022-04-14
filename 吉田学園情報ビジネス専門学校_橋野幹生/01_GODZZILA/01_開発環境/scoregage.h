@@ -26,8 +26,8 @@ void InitScoreGage(void);		//スコアゲージの初期化処理
 void UninitScoreGage(void);		//スコアゲージの終了処理
 void UpdateScoreGage(void);		//スコアゲージの更新処理
 void DrawScoreGage(void);		//スコアゲージの描画処理
-void SetScoreGage(D3DXVECTOR3 pos, int nLife);	//スコアゲージの設定
-void HitScoreGage(int nCntScoreGage, int nDamage);
+void SetScoreGage(D3DXVECTOR3 pos, int nLife);		//スコアゲージの設定
+void HitScoreGage(int nCntScoreGage, int nDamage);	//スコアのゲージが減る処理
 
 #endif
 
