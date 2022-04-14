@@ -12,7 +12,7 @@
 #define Bullet_X		(3.0f)	// x方向への値	横幅
 #define Bullet_Y		(3.0f)	// y方向への値	高さ
 #define Bullet_Z		(3.0f)	// z方向への値	縦幅
-#define BULLET_DAMAGE	(25)		// 弾で与えるダメージ量
+#define BULLET_DAMAGE	(4)		// 弾で与えるダメージ量
 
 //グローバル変数宣言
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBullet = NULL;	//頂点バッファへのポインタ
