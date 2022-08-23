@@ -173,7 +173,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\•\\Œ»‹Zp\\ŒãŠú\\ƒ‚ƒfƒ‹\\Ver.3.0\\data\\TEXTURE\\concrete.jpg";
+    "data\\TEXTURE\\concrete.jpg";
    }
   }
   Material {
@@ -182,7 +182,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\•\\Œ»‹Zp\\ŒãŠú\\ƒ‚ƒfƒ‹\\Ver.3.0\\data\\TEXTURE\\concrete2.jpg";
+    "data\\TEXTURE\\concrete2.jpg";
    }
   }
   Material {
@@ -191,7 +191,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\•\\Œ»‹Zp\\ŒãŠú\\ƒ‚ƒfƒ‹\\Ver.3.0\\data\\TEXTURE\\K.jpg";
+    "data\\TEXTURE\\K.jpg";
    }
   }
   Material {
@@ -200,7 +200,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\•\\Œ»‹Zp\\ŒãŠú\\ƒ‚ƒfƒ‹\\Ver.3.0\\data\\TEXTURE\\ƒRƒ“ƒNƒŠ.jpg";
+    "data\\TEXTURE\\ƒRƒ“ƒNƒŠ.jpg";
    }
   }
   Material {
@@ -209,7 +209,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\•\\Œ»‹Zp\\ŒãŠú\\ƒ‚ƒfƒ‹\\Ver.3.0\\data\\TEXTURE\\bill.jpg";
+    "data\\TEXTURE\\bill.jpg";
    }
   }
   Material {
@@ -218,7 +218,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "ƒ‚ƒfƒ‹\\Ver.3.0\\data\\TEXTURE\\bill.jpg";
+    "data\\TEXTURE\\bill.jpg";
    }
   }
  }
